@@ -1,27 +1,3 @@
-"""
-================================================================================
-PHYSICS-INFORMED NEURAL SURROGATE ENSEMBLE (5-Model Deep SiLU MLP)
-================================================================================
-Accelerates multi-parameter sweeps and Monte Carlo uncertainty sampling by ~500x
-while maintaining strict feature-level synchronization with backend/fire_model.py.
-
-IMPORTANT: this ensemble is a fast EMULATOR of FireModel. It is trained to reproduce the
-physics engine, so agreement with it is not independent validation. See ai/surrogate_flight_check.py
-for a direct comparison against the flight data. If any calibrated constant imported from
-fire_model changes, the ensemble must be retrained (python -m ai.train_surrogate).
-
-Architecture & Methodology:
-- 5-member Deep Ensemble (Lakshminarayanan et al., NeurIPS 2017) for epistemic
-  disagreement estimation alongside physical boundary features.
-- SiLU (Swish) smooth activations (Elfwing et al., 2018) matching the C1-smooth
-  Hermite thin-to-thick transition in FireModel.
-- Inputs (41D): Operating state (g, O2, flow, thick, P, W), thermophysical
-  properties (rho_s, c_s, k_s, T_pyro, LOI, emissivity, alpha_s), boundary-layer
-  scale invariants (T_eff, V_eff, delta_f, flow_factor), category flags,
-  geometry one-hot (plate, rod, sphere), and edge_boundary one-hot (free, clamped).
-================================================================================
-"""
-
 import math
 from pathlib import Path
 
@@ -29,7 +5,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-# Shared with fire_model to keep a single source of truth. Changing these requires retraining.
 try:
     from backend.fire_model import (
         T_FLAME_MAX_K, T_AMBIENT_K, NU_AIR_300K, X_REF_M,
@@ -51,7 +26,7 @@ except ImportError:
         LATERAL_O2_ENTRAIN_COEFF, NARROW_SHEET_EDGE_EXP,
     )
 
-INPUT_DIM = 41  # 30 base features + 11 regime/kink features synced with FireModel
+INPUT_DIM = 41
 OUTPUT_DIM = 3
 N_ENSEMBLE = 5
 CHARRING_CATS = {"Engineering Thermosets", "Wood & Bio-materials"}
@@ -66,11 +41,6 @@ def engineer_features(
     geometry="plate",
     edge_boundary="free",
 ):
-    """
-    Constructs the 41-dimensional physics-informed feature vector.
-    Must stay 100% synchronized between train_surrogate.py and EnsembleSurrogate.predict(),
-    and with FireModel._predict_core (entrainment, thin/thick blend, LOI margin, strain kinks).
-    """
     T_inf = T_AMBIENT_K
     X_O2_nom = o2 / 100.0
     V_forced = max(flow / 100.0, 0.001)
@@ -82,7 +52,6 @@ def engineer_features(
     geom = geometry.lower().strip()
     edge = edge_boundary.lower().strip()
 
-    # Quasi-2D lateral oxygen entrainment (identical gating/coefficient to FireModel)
     nu_g = NU_AIR_300K / max(p_ratio, 0.1)
     Re_prelim = max((V_forced * X_REF_M) / nu_g, 0.1)
     delta_f_prelim = X_REF_M / math.sqrt(Re_prelim)
@@ -118,7 +87,6 @@ def engineer_features(
     is_metal = 1.0 if "Metal" in category else 0.0
     is_textile = 1.0 if "Fabric" in category else 0.0
 
-    # Thin->thick blend: same function and inputs (incl. char-reduced conductivity) as FireModel
     char_weight = _smoothstep(tau, 0.0005, 0.002)
     k_eff = mat["k_s"] * (1.0 - 0.35 * char_weight) if is_charring else mat["k_s"]
     alpha_eff = k_eff / max(mat["rho_s"] * mat["c_s"], 1.0)
@@ -131,7 +99,6 @@ def engineer_features(
     else:
         flow_factor = 1.0
 
-    # Geometry & Quasi-2D edge boundary encodings
     is_plate = 1.0 if geom == "plate" else 0.0
     is_rod = 1.0 if geom in ("rod", "cylinder") else 0.0
     is_sphere = 1.0 if geom == "sphere" else 0.0
@@ -143,7 +110,6 @@ def engineer_features(
     emissivity = mat.get("emissivity", 0.85)
     alpha_s = mat["k_s"] / max(mat["rho_s"] * mat["c_s"], 1.0)
 
-    # --- Regime / kink features (these mirror the piecewise logic in FireModel) ---
     p_loi_corr = (1.0 / p_ratio) ** 0.12 if p_ratio < 1.0 else 1.0
     loi_thr = mat.get("LOI", 18.0) * (loi_factor if is_microg else 1.0) * p_loi_corr
     loi_margin = (eff_o2_pct - loi_thr) / loi_thr if loi_thr > 0 else 1.0
@@ -169,7 +135,6 @@ def engineer_features(
         is_charring, is_foam, is_liquid, is_metal, is_textile,
         log_width, is_plate, is_rod, is_sphere, loi_factor,
         is_edge_free, is_edge_clamped, emissivity * math.log(alpha_s + EPS),
-        # --- 11 new features ---
         math.log(delta_f + EPS),
         math.log(max(thermal_ratio, EPS)),
         thick_blend,
