@@ -62,8 +62,22 @@ PARAM_SPECS = [
     ("THERMAL_DEPTH_V_EXP",      0.0,   0.6,   False),
     ("THIN_THICK_RATIO_LO",      0.2,   1.2,   False),
     ("THIN_THICK_RATIO_HI",      1.2,   3.0,   False),
+    # Promoted from hard-coded values in fire_model.py (need the patched fire_model.py).
+    # CONCURRENT_VEL_EXP / NARROW_SHEET_EDGE_EXP / LATERAL_O2_ENTRAIN_COEFF / LOW_FLOW_BOOST_EXP
+    # are each exercised by only 1-2 runs, so expect them to be poorly identifiable.
+    # STRAIN_EXPONENT_THIN and SPHERE_CURVATURE_MULT are deliberately NOT here: no calibration
+    # run exercises them, so they cannot be fitted or validated.
+    ("CONCURRENT_VEL_EXP",       0.1,   1.2,   False),
+    ("NARROW_SHEET_EDGE_EXP",    0.0,   0.7,   False),
+    ("LATERAL_O2_ENTRAIN_COEFF", 0.0,   0.9,   False),
+    ("LOW_FLOW_BOOST_EXP",       0.0,   0.6,   False),
+    ("RAD_FEEDBACK_COEFF",       0.1,   1.6,   False),
 ]
 SPEC_NAMES = [s[0] for s in PARAM_SPECS]
+_missing = [n for n in SPEC_NAMES if not hasattr(fm, n)]
+if _missing:
+    sys.exit(f"fire_model.py has no constant(s) {_missing}. Use the patched fire_model.py "
+             f"(named constants) or remove them from PARAM_SPECS.")
 
 # CSV schema of ai/calibration_data_1d.csv
 #   csv column -> FireModel keyword
@@ -132,7 +146,8 @@ def predict_rows(rows, params):
         for r in rows:
             try:
                 res = model._predict_core(r["material"], **r["kwargs"])
-                p = SPREAD_FLOOR_MMS if res["is_extinct"] else max(res["flame_spread_mms"], SPREAD_FLOOR_MMS)
+                raw = res.get("flame_spread_mms_raw", res["flame_spread_mms"])   # unrounded when available
+                p = SPREAD_FLOOR_MMS if res["is_extinct"] else max(raw, SPREAD_FLOOR_MMS)
             except Exception:
                 p = SPREAD_FLOOR_MMS
             preds.append(p)

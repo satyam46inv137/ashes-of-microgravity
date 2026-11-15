@@ -7,21 +7,25 @@ FastAPI Backend (v2.1.0) integrating:
   2. NumPy-Accelerated 2D Transient Thermal-Pyrolysis PDE Solver (/simulate-2d)
   3. 41-Feature Physics-Informed Neural Surrogate Ensemble with OOD Guardrails
   4. Grounded NASA Literature RAG Engine (ChromaDB + Anti-Hallucination Filter)
-  5. Strict Pydantic Request & Response Contracts + NASA-STD-7009A Provenance
+  5. Strict Pydantic Request & Response Contracts + Constants Provenance (7009A-inspired)
 ================================================================================
 """
 
 import json
 import logging
+import os
 import sys
 import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
+from dotenv import load_dotenv
+load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
@@ -30,6 +34,11 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - [%(name)s] %(message)s",
 )
 logger = logging.getLogger("ashes.api")
+
+RESEARCH_DISCLAIMER = (
+    "Research and educational screening tool. Not medical advice, not a certified safety "
+    "assessment, and not a substitute for NASA-STD-6001B testing. Not affiliated with NASA."
+)
 
 BACKEND_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BACKEND_DIR.parent
@@ -66,47 +75,136 @@ def _load_provenance() -> dict:
     return {}
 
 
+_surrogate = None   # None=not tried, False=failed, instance=loaded
+_kb = None
+
+def _get_surrogate():
+    global _surrogate
+    if _surrogate is None:
+        try:
+            from ai.surrogate import EnsembleSurrogate
+            _surrogate = EnsembleSurrogate()
+            logger.info("AI surrogate lazy-loaded (5-model 41-feature ensemble).")
+        except Exception as e:
+            logger.warning(f"AI surrogate unavailable: {e}")
+            _surrogate = False
+    return _surrogate or None
+
+def _get_kb():
+    global _kb
+    if _kb is None:
+        try:
+            from ai.rag import NASAKnowledgeBase
+            _kb = NASAKnowledgeBase()
+            logger.info(f"RAG lazy-loaded: {_kb.collection.count()} chunks.")
+        except Exception as e:
+            logger.warning(f"RAG unavailable: {e}")
+            _kb = False
+    return _kb or None
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.provenance = _load_provenance()
-    app.state.surrogate = None
-    app.state.kb = None
-    app.state.rag_chunks_count = 0
-
-    try:
-        from ai.surrogate import EnsembleSurrogate
-        app.state.surrogate = EnsembleSurrogate()
-        logger.info("AI surrogate loaded successfully (5-model 41-feature ensemble).")
-    except Exception as e:
-        logger.warning(f"AI surrogate unavailable (physics engine remains active): {e}")
-
-    try:
-        from ai.rag import NASAKnowledgeBase
-        kb = NASAKnowledgeBase()
-        app.state.kb = kb
-        app.state.rag_chunks_count = kb.collection.count()
-        logger.info(f"RAG Knowledge Base loaded: {app.state.rag_chunks_count} chunks.")
-    except Exception as e:
-        logger.warning(f"RAG Knowledge Base unavailable: {e}")
-
+    logger.info("Startup: physics + materials ready. Surrogate/RAG lazy-load on first use.")
     yield
-    logger.info("Shutting down Ashes of Microgravity API.")
+    logger.info("Shutting down.")
 
 
 app = FastAPI(
     title="Ashes of Microgravity API",
     description=(
         "Hybrid Physics + AI Spacecraft Fire Safety & Microgravity Flame Spread "
-        "Simulation Platform (Calibrated to NASA Saffire I-VI & BASS-II)."
+        "Simulation Platform (calibrated on NASA Saffire I-V & BASS-II flight data). "
+        + RESEARCH_DISCLAIMER
     ),
     version="2.1.0",
     lifespan=lifespan,
 )
 
-# Spec-compliant CORS: wildcard origin with allow_credentials=False
+# ------------------------------------------------------------------------------
+# Lightweight in-memory rate limiting (no extra dependency).
+# Protects the expensive endpoints (/simulate-2d, /rag -> Groq quota) from abuse.
+# Config via env: RATE_LIMIT_PER_MIN (default 120), RATE_LIMIT_HEAVY_PER_MIN (default 20),
+# RATE_LIMIT_DISABLED=1, TRUST_PROXY_HEADERS=1 (read client IP from X-Forwarded-For when
+# running behind a reverse proxy / Space; otherwise every user shares the proxy's IP).
+# ------------------------------------------------------------------------------
+RATE_LIMIT_DISABLED = os.getenv("RATE_LIMIT_DISABLED", "0") == "1"
+RATE_LIMIT_PER_MIN = int(os.getenv("RATE_LIMIT_PER_MIN", "120"))
+RATE_LIMIT_HEAVY_PER_MIN = int(os.getenv("RATE_LIMIT_HEAVY_PER_MIN", "20"))
+TRUST_PROXY_HEADERS = os.getenv("TRUST_PROXY_HEADERS", "0") == "1"
+HEAVY_PATHS = {"/simulate-2d", "/rag", "/transient", "/compare-materials", "/sensitivity"}
+RATE_LIMIT_EXEMPT_PATHS = {"/", "/health"}
+RATE_LIMIT_EXEMPT_PREFIXES = ("/static", "/docs", "/redoc", "/openapi.json")
+
+
+class SlidingWindowLimiter:
+    """Per-key sliding-window counter (in-memory; resets on restart, not shared across workers)."""
+
+    def __init__(self, window_s: float = 60.0, max_keys: int = 10_000):
+        self.window_s = window_s
+        self.max_keys = max_keys
+        self.hits = defaultdict(deque)
+
+    def allow(self, key: str, limit: int, now: Optional[float] = None) -> Tuple[bool, int]:
+        now = time.monotonic() if now is None else now
+        q = self.hits[key]
+        cutoff = now - self.window_s
+        while q and q[0] <= cutoff:
+            q.popleft()
+        if len(q) >= limit:
+            return False, max(1, int(self.window_s - (now - q[0])) + 1)
+        q.append(now)
+        if len(self.hits) > self.max_keys:  # prune idle keys so memory stays bounded
+            for k in [k for k, v in self.hits.items() if not v or v[-1] <= cutoff]:
+                del self.hits[k]
+        return True, 0
+
+
+_limiter = SlidingWindowLimiter()
+
+
+def _client_ip(request: Request) -> str:
+    if TRUST_PROXY_HEADERS:
+        xff = request.headers.get("x-forwarded-for")
+        if xff:
+            return xff.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def _too_many(retry_after: int) -> JSONResponse:
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Rate limit exceeded. Please retry shortly."},
+        headers={"Retry-After": str(retry_after)},
+    )
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    if (RATE_LIMIT_DISABLED or request.method == "OPTIONS" or path in RATE_LIMIT_EXEMPT_PATHS
+            or path.startswith(RATE_LIMIT_EXEMPT_PREFIXES)):
+        return await call_next(request)
+    ip = _client_ip(request)
+    if ip == "testclient":  # FastAPI TestClient (pytest) is never rate limited
+        return await call_next(request)
+    if path in HEAVY_PATHS:
+        ok, retry = _limiter.allow(f"heavy:{ip}", RATE_LIMIT_HEAVY_PER_MIN)
+        if not ok:
+            return _too_many(retry)
+    ok, retry = _limiter.allow(f"all:{ip}", RATE_LIMIT_PER_MIN)
+    if not ok:
+        return _too_many(retry)
+    return await call_next(request)
+
+
+# CORS: defaults to wildcard (public demo, no credentials). For a real deployment set
+# ALLOWED_ORIGINS="https://your-site.example,https://other.example". Added AFTER the rate
+# limiter so it is the outermost layer and 429 responses still carry CORS headers.
+ALLOWED_ORIGINS = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "*").split(",") if o.strip()] or ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -186,6 +284,7 @@ class PredictResponse(BaseModel):
     surrogate: Optional[SurrogateSummary] = None
     compute_time_ms: float
     toxicology: Optional[Dict[str, Any]] = None
+    disclaimer: Optional[str] = None
 
 class Baseline(BaseModel):
     g_level: float = Field(default=0.0, ge=0.0, le=2.0)
@@ -355,6 +454,7 @@ class InsightResponse(BaseModel):
     safety_implications: str
     recommendations: List[str]
     engine_source: str
+    disclaimer: Optional[str] = None
 
 
 class MetadataResponse(BaseModel):
@@ -438,9 +538,10 @@ def predict(req: PredictRequest):
     res["prediction_source"] = "physics"
     res["surrogate_agrees_with_physics"] = False
 
-    if req.use_ai_surrogate and getattr(app.state, "surrogate", None) and not res["is_extinct"]:
+    surrogate = _get_surrogate() if req.use_ai_surrogate else None
+    if surrogate and not res["is_extinct"]:
         try:
-            ai = app.state.surrogate.predict(
+            ai = surrogate.predict(
                 req.g_level,
                 req.oxygen_pct,
                 req.flow_vel_cms,
@@ -451,7 +552,7 @@ def predict(req: PredictRequest):
                 sample_width_mm=req.sample_width_mm,
                 geometry=req.geometry,
                 edge_boundary=req.edge_boundary,
-            )
+                )
             ai_spread = ai["spread_mms"]["mean"]
             physics_spread = res["flame_spread_mms"]
             rel_diff = abs(ai_spread - physics_spread) / physics_spread if physics_spread > 0 else 1.0
@@ -467,7 +568,7 @@ def predict(req: PredictRequest):
                 else 0.0,
                 "flame_temp_K": round(ai["flame_temp_K"]["mean"], 1),
                 "status": "RELIABLE (Matches Physics)" if is_reliable else "OUT_OF_DISTRIBUTION (Ignored)",
-                "note": "5-model 41-feature physics-informed ensemble cross-check (valid within ±30% of physics).",
+                "note": "Fast emulator of the physics engine (not an independent validation); flagged OUT_OF_DISTRIBUTION when it differs from physics by more than 30%.",
             }
             if not is_reliable:
                 logger.info(
@@ -492,6 +593,7 @@ def predict(req: PredictRequest):
 )
 
     res["compute_time_ms"] = round((time.perf_counter() - t0) * 1000.0, 2)
+    res["disclaimer"] = RESEARCH_DISCLAIMER
     return res
 
 
@@ -627,12 +729,14 @@ def transient(req: TransientRequest):
         raise HTTPException(status_code=400, detail="Transient simulation failed for given parameters.")
 
 
-@app.post("/rag", response_model=RAGResponse, tags=["AI Knowledge"], summary="Query NASA microgravity combustion papers")
+@app.post("/rag", response_model=RAGResponse, tags=["AI Knowledge"],
+          summary="Grounded Q&A over NASA Saffire / BASS-II / SoFIE reports")
 def rag(req: RAGRequest):
-    if not getattr(app.state, "kb", None):
-        raise HTTPException(status_code=503, detail="RAG Knowledge Base not loaded.")
+    kb = _get_kb()
+    if not kb:
+        raise HTTPException(status_code=503, detail="RAG not available (lite deployment).")
     try:
-        return app.state.kb.query(req.query.strip(), n_results=req.n_results)
+        return kb.query(req.query.strip(), n_results=req.n_results)
     except Exception:
         logger.exception("RAG query error")
         raise HTTPException(status_code=500, detail="Knowledge base query failed.")
@@ -647,7 +751,9 @@ def insight(req: InsightRequest):
         if not mat_dict:
             mat_name = req.result.get("material", "")
             mat_dict = MAT_DICT.get(mat_name, {"name": mat_name or "Unknown Material"})
-        return generate_insight(req.result, mat_dict, req.query_context)
+        out = generate_insight(req.result, mat_dict, req.query_context)
+        out["disclaimer"] = RESEARCH_DISCLAIMER
+        return out
     except Exception:
         logger.exception("Insight generation error")
         raise HTTPException(status_code=500, detail="Safety insight generation failed.")
@@ -662,8 +768,15 @@ def metadata():
             "core_in_sample_mape_pct": 2.83,
             "extended_in_sample_mape_pct": 7.83,
             "combined_in_sample_mape_pct": 5.90,
-            "loo_core_out_of_sample_mape_pct": 4.15,
-            "loo_all13_out_of_sample_mape_pct": 6.68,
+            "combined_in_sample_unrounded_mape_pct": 6.03,
+            "nested_loo_mape_pct": {"seed_0": 10.67, "seed_100": 12.26, "seed_200": 10.42},
+            "nested_lomo_mape_pct": {"seed_0": 19.94, "seed_100": 10.19, "seed_200": 8.07},
+            "legacy_partial_loo_pct": {"core_5": 4.15, "all_13": 6.68},
+            "nested_n_fitted_constants": 16,
+            "validation_note": (
+                "Nested LOO refits all 16 empirical constants per fold. In-sample 5.90% uses the rounded public "
+                "predict() output; 6.03% uses unrounded values. Legacy LOO refit only 4 constants and is optimistic."
+            ),
             "flight_benchmarks": ["Saffire-I", "Saffire-II", "Saffire-III", "Saffire-IV", "Saffire-V", "BASS", "BASS-II"],
         },
         "uncertainty_semantics": prov.get("uncertainty_semantics", {}),
@@ -675,17 +788,19 @@ def metadata():
 @app.get("/health", response_model=HealthResponse, tags=["System"], summary="API and subsystem health status")
 def health():
     physics_ok = fire_model is not None and len(MAT_DICT) > 0
-    surrogate_ok = getattr(app.state, "surrogate", None) is not None
-    rag_ok = getattr(app.state, "kb", None) is not None
+    surrogate_ok = _surrogate is not None and _surrogate is not False
+    rag_ok = _kb is not None and _kb is not False
+    rag_chunks = _kb.collection.count() if rag_ok else 0
     return {
-        "status": "ok" if (physics_ok and surrogate_ok and rag_ok) else "degraded",
+        "status": "ok" if physics_ok else "degraded",   # ← physics-hi decides
         "version": "2.1.0",
         "physics_loaded": physics_ok,
         "materials_loaded": len(MATERIALS_118),
-        "surrogate_loaded": surrogate_ok,
-        "rag_loaded": rag_ok,
-        "rag_chunks": getattr(app.state, "rag_chunks_count", 0),
+        "surrogate_loaded": surrogate_ok,   # false until first /predict
+        "rag_loaded": rag_ok,                # false until first /rag
+        "rag_chunks": rag_chunks,
     }
+
 
 
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
@@ -709,21 +824,27 @@ class ToxicologyRequest(BaseModel):
     mask_don_minute: Optional[float] = Field(default=None, ge=0.0, le=240.0)
 
 
-@app.post("/toxicology", tags=["Crew Health"], summary="Dynamic cabin toxicology, NASA SMACs & COHb/FED simulation")
+@app.post("/toxicology", tags=["Crew Health"], summary="Dynamic cabin toxicology, NASA SMACs & COHb/FED simulation (illustrative)")
 def toxicology_sim(req: ToxicologyRequest):
     mat = _ensure_material_exists(req.material)
-    pred = fire_model.predict(
-        req.material,
-        g_level=req.g_level,
-        pressure_kPa=req.pressure_kPa,
-        oxygen_pct=req.oxygen_pct,
-        flow_vel_cms=req.flow_vel_cms,
-        thickness_mm=req.thickness_mm,
-        configuration=req.configuration,
-        sample_width_mm=req.sample_width_mm,
-        geometry=req.geometry,
-        edge_boundary=req.edge_boundary,
-    )
+    try:
+        pred = fire_model.predict(
+            req.material,
+            g_level=req.g_level,
+            pressure_kPa=req.pressure_kPa,
+            oxygen_pct=req.oxygen_pct,
+            flow_vel_cms=req.flow_vel_cms,
+            thickness_mm=req.thickness_mm,
+            configuration=req.configuration,
+            sample_width_mm=req.sample_width_mm,
+            geometry=req.geometry,
+            edge_boundary=req.edge_boundary,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception:
+        logger.exception("Toxicology physics prediction error")
+        raise HTTPException(status_code=400, detail="Invalid simulation parameters.")
     return {
         "material": req.material,
         "flame_spread_mms": pred["flame_spread_mms"],
@@ -744,6 +865,7 @@ def toxicology_sim(req: ToxicologyRequest):
             crew_activity=req.crew_activity,
             mask_don_minute=req.mask_don_minute,
         ),
+        "disclaimer": RESEARCH_DISCLAIMER,
     }
 
 if AUDIO_DIR.exists():

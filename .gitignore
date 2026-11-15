@@ -1,14 +1,50 @@
+# Secrets
 .env
-.env.local
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*.so
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+
+# Virtual envs
 .venv/
 venv/
-.pytest_cache/
+env/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
 .DS_Store
 Thumbs.db
-ai/chroma_db/
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+
+# Legacy pickle scalers (replaced by .npz in ai/models/)
 ai/models/*.pkl
-.env.*
-ai/papers/*.pdf
+
+# HF cache (auto-downloaded)
+.cache/
+
+# Vercel
+.vercel/

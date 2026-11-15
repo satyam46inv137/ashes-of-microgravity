@@ -12,7 +12,7 @@
     "physics_uncertainty": "First-order Taylor series error propagation (Kline & McClintock, 1953 / ISO GUM) combining input measurement tolerances (O2 +-1.5%, flow +-5%, thickness +-2%, pressure +-1%) with applicability-scaled model-form uncertainty.",
     "confidence_interval_multiplier": "1.96 x std under Gaussian assumption (95% CI). Does NOT include systematic physics error.",
     "applicability_score": "Continuous distance-based heuristic score (0-100) aligned with NASA-STD-7009A V&V credibility envelopes. Higher score = closer to Saffire I-VI / BASS-II flight-validated envelope.",
-    "caveat": "In-sample calibration against 13 Saffire/BASS flight points (2.83% core MAPE, 5.90% combined MAPE); leave-one-out out-of-sample MAPE 4.15% (core 5) and 6.68% (all 13). NOTE: ROD_CURVATURE_*, LOW_P_RAD_FEEDBACK_EXP and THERMAL_DEPTH_* / THIN_THICK_RATIO_* were tuned on the full 13-point set and are NOT refit inside LOO, so LOO is optimistic for them."
+    "caveat": "In-sample calibration against 13 Saffire/BASS flight points (2.83% core MAPE, 6.03% combined MAPE); nested leave-one-out out-of-sample MAPE 10.4-12.3% over 3 seeds (16 constants refit per fold). Legacy partially-nested LOO: 4.15% (core 5) and 6.68% (all 13)."
   },
   "constants": {
     "T_AMBIENT_K": {

@@ -5,6 +5,11 @@ PHYSICS-INFORMED NEURAL SURROGATE ENSEMBLE (5-Model Deep SiLU MLP)
 Accelerates multi-parameter sweeps and Monte Carlo uncertainty sampling by ~500x
 while maintaining strict feature-level synchronization with backend/fire_model.py.
 
+IMPORTANT: this ensemble is a fast EMULATOR of FireModel. It is trained to reproduce the
+physics engine, so agreement with it is not independent validation. See ai/surrogate_flight_check.py
+for a direct comparison against the flight data. If any calibrated constant imported from
+fire_model changes, the ensemble must be retrained (python -m ai.train_surrogate).
+
 Architecture & Methodology:
 - 5-member Deep Ensemble (Lakshminarayanan et al., NeurIPS 2017) for epistemic
   disagreement estimation alongside physical boundary features.
@@ -33,6 +38,7 @@ try:
         LOI_MICROG_FACTOR_DEFAULT, _smoothstep, thermal_blend_weight,
         FLOW_STRAIN_CRITICAL_CMS, FLOW_STRAIN_CRITICAL_THIN_CMS,
         LOW_P_RAD_FEEDBACK_EXP, ROD_CURVATURE_RATIO_MAX,
+        LATERAL_O2_ENTRAIN_COEFF, NARROW_SHEET_EDGE_EXP,
     )
 except ImportError:
     from fire_model import (
@@ -42,6 +48,7 @@ except ImportError:
         LOI_MICROG_FACTOR_DEFAULT, _smoothstep, thermal_blend_weight,
         FLOW_STRAIN_CRITICAL_CMS, FLOW_STRAIN_CRITICAL_THIN_CMS,
         LOW_P_RAD_FEEDBACK_EXP, ROD_CURVATURE_RATIO_MAX,
+        LATERAL_O2_ENTRAIN_COEFF, NARROW_SHEET_EDGE_EXP,
     )
 
 INPUT_DIM = 41  # 30 base features + 11 regime/kink features synced with FireModel
@@ -81,7 +88,7 @@ def engineer_features(
     delta_f_prelim = X_REF_M / math.sqrt(Re_prelim)
 
     if geom == "plate" and edge == "free" and sample_width_mm < 200.0:
-        entrain_boost = 1.0 + 0.25 * min(delta_f_prelim / max(W, 0.005), 0.6)
+        entrain_boost = 1.0 + LATERAL_O2_ENTRAIN_COEFF * min(delta_f_prelim / max(W, 0.005), 0.6)
     elif geom in ("rod", "cylinder", "sphere"):
         entrain_boost = 1.22 if geom == "sphere" else 1.18
     else:
@@ -143,7 +150,7 @@ def engineer_features(
     loi_margin = max(-0.5, min(2.0, loi_margin))
     low_p_factor = math.log((1.0 / p_ratio) ** LOW_P_RAD_FEEDBACK_EXP) if p_ratio < 1.0 else 0.0
     rod_ratio = min(delta_f / tau, ROD_CURVATURE_RATIO_MAX) if is_rod else 0.0
-    narrow_boost = math.log((200.0 / sample_width_mm) ** 0.20) if (
+    narrow_boost = math.log((200.0 / sample_width_mm) ** NARROW_SHEET_EDGE_EXP) if (
         geom == "plate" and edge == "free" and sample_width_mm < 200.0) else 0.0
     strain_thin = math.log(max(V_forced / (FLOW_STRAIN_CRITICAL_THIN_CMS / 100.0), 1.0))
     strain_thick = math.log(max(V_forced / (FLOW_STRAIN_CRITICAL_CMS / 100.0), 1.0))

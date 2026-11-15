@@ -274,6 +274,26 @@ def train():
     logger.info("=" * 78)
     logger.info(f"Training complete! Mean val loss: {np.mean(val_losses):.5f}")
 
+    # ---- Persist held-out report as JSON artifact for README / provenance ----
+    import json
+    heldout_report = {
+        "overall": overall,
+        "per_regime": {
+            name: spread_metrics(ens_log[mask], true_log[mask])
+            for name, mask in regime_masks(X_test_raw).items()
+        },
+        "n_train": int(len(X_train_raw)),
+        "n_val": int(len(X_val_raw)),
+        "n_test": int(len(X_test_raw)),
+        "seed": SEED,
+        "n_samples_total": N_SAMPLES,
+        "ensemble_members": N_ENSEMBLE,
+    }
+    report_path = save_dir / "heldout_report.json"
+    with open(report_path, "w") as f:
+        json.dump(heldout_report, f, indent=2)
+    logger.info(f"Held-out report saved to {report_path}")
+
 
 if __name__ == "__main__":
     train()

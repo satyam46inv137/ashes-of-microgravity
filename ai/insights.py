@@ -158,8 +158,8 @@ def _build_active_insight(result, material, query_context):
             "ignition hazards."
         )
         recommendations.append(
-            "Implement drip-containment barriers and flame-retardant outer sheath "
-            "(Nomex 450 / Kapton wrap)."
+            "Consider drip-containment barriers or a flame-retardant outer layer; "
+            "verify any candidate material experimentally."
         )
     elif any(tag in cat_lower for tag in ("thermoset", "wood", "bio")):
         key_points.append(
@@ -182,14 +182,15 @@ def _build_active_insight(result, material, query_context):
         )
 
     recommendations.append(
-        "Use water-mist fine spray or clean-agent gas suppression to avoid "
-        "spreading hot molten debris in reduced gravity."
+        "Screening-level guidance: fine water-mist or clean-agent suppression may be preferable to "
+        "methods that scatter molten debris in reduced gravity; follow the vehicle's certified "
+        "fire-response procedures."
     )
 
     if _is_safety_query(query_context):
         key_points.append(
-            "Safety-focused query detected: prioritize suppression system readiness "
-            "and material substitution (e.g., Nomex 450) for crewed habitats."
+            "Safety-focused query detected: this tool screens flammability only; suppression readiness "
+            "and material selection should follow mission fire-safety requirements and certified testing."
         )
     elif _is_behavior_query(query_context):
         key_points.append(
@@ -202,8 +203,9 @@ def _build_active_insight(result, material, query_context):
         "regime": regime,
         "key_points": key_points,
         "safety_implications": (
-            f"Flammability hazard evaluated at {conf} applicability against NASA "
-            "Saffire/BASS-II flight telemetry."
+            f"Screening-level flammability estimate (applicability: {conf}), calibrated on NASA "
+            "Saffire/BASS-II flight data for a small set of materials. Not a safety certification; "
+            "confirm with NASA-STD-6001B testing and mission fire-safety procedures."
         ),
         "recommendations": recommendations,
         "engine_source": "Physics-informed diagnostic rules (de Ris / Quintiere / Saffire criteria)",
@@ -236,7 +238,8 @@ def generate_insight(result, material, query_context=""):
         fed = tox.get("purser_fed_total", 0.0)
         insight["key_points"].append(
             f"Crew Toxicology ({sev}): Limiting gas {lim} reaches {ratio:.2f}x NASA 1-hr SMAC; "
-            f"predicted COHb = {cohb:.1f}% and ISO 13571 Purser FED = {fed:.3f} ({tox.get('primary_syndrome', '')})."
+            f"predicted COHb = {cohb:.1f}% and ISO 13571 Purser FED = {fed:.3f} ({tox.get('primary_syndrome', '')}). "
+            "Illustrative model estimate; not clinical guidance."
         )
         if sev in ("WARNING", "CRITICAL"):
             insight["recommendations"].insert(0, tox.get("triage_action", "Don PBA 100% O2 mask immediately."))

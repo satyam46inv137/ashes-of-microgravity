@@ -128,6 +128,26 @@ THERMAL_DEPTH_V_EXP = 0.25
 THIN_THICK_RATIO_LO = 0.85        # tau/delta_th below which fuel is fully thermally thin [-]
 THIN_THICK_RATIO_HI = 1.60        # tau/delta_th above which fuel is fully thermally thick [-]
 
+# ------------------------------------------------------------------------------
+# Formerly hard-coded empirical exponents/coefficients, promoted to named constants so
+# they are visible, documented and can be refit in nested validation (ai/nested_loo.py).
+# Values are unchanged. Which calibration runs exercise each one is noted below.
+# ------------------------------------------------------------------------------
+CONCURRENT_VEL_EXP = 0.55         # Concurrent-flow plume scaling (V_eff/0.20)^n, 0g.
+                                  # Exercised by: Saffire-I S1, Saffire-III S1.
+NARROW_SHEET_EDGE_EXP = 0.20      # Free-edge speed-up (200/W)^n on sheets < 200 mm.
+                                  # Exercised by: BASS-II B1, B2 only.
+LATERAL_O2_ENTRAIN_COEFF = 0.25   # Lateral O2 entrainment boost on narrow free-edge sheets.
+                                  # Exercised by: BASS-II B1, B2 only (degenerate with the above).
+LOW_FLOW_BOOST_EXP = 0.15         # Thin-fuel low-flow (< 5 cm/s) boost exponent.
+                                  # Exercised by: BASS-II B1 only.
+RAD_FEEDBACK_COEFF = 0.55         # Soot radiative-feedback coefficient at O2 > 21%.
+                                  # Exercised by: Saffire-IV S2, Saffire-V S4 (and weakly Saffire-II).
+STRAIN_EXPONENT_THIN = 0.58       # Thin-fuel strain roll-off exponent above 30 cm/s.
+                                  # NOT exercised by any calibration run (max flow is 25 cm/s).
+SPHERE_CURVATURE_MULT = 1.85      # Spherical-fuel speed-up multiplier.
+                                  # NOT exercised by any calibration run (no sphere data).
+
 
 def _smoothstep(x, edge0, edge1):
     """
@@ -194,6 +214,11 @@ class FireModel:
             "applicability_issues": applic["issues"],
         }
 
+    @staticmethod
+    def _raw_spread(res):
+        """Unrounded spread [mm/s] from a result dict (falls back to the rounded value / 0 if extinct)."""
+        return res.get("flame_spread_mms_raw", res.get("flame_spread_mms", 0.0))
+
     def _compute_uncertainty_mms(self, material_name, base_spread, params, applic_score):
         """
         First-Order Taylor Series Uncertainty Propagation (ISO GUM / Kline-McClintock method):
@@ -222,8 +247,8 @@ class FireModel:
             delta = val * 0.05
             p_hi = {**params, key: val + delta}
             p_lo = {**params, key: max(1e-4, val - delta)}
-            s_hi = self._predict_core(material_name, **p_hi)["flame_spread_mms"]
-            s_lo = self._predict_core(material_name, **p_lo)["flame_spread_mms"]
+            s_hi = self._raw_spread(self._predict_core(material_name, **p_hi))
+            s_lo = self._raw_spread(self._predict_core(material_name, **p_lo))
             # Central finite-difference sensitivity derivative dV_f / dx_i
             ds_dx = (s_hi - s_lo) / (2.0 * delta)
             sigma_x = val * rel_u
@@ -288,7 +313,7 @@ class FireModel:
         # across the side boundary layers (~delta_f / W), enriching effective O2 at the flame sheet.
         # Ref: Olson et al. (1988) & BASS-II narrow-sample edge-diffusion observations.
         if geom_norm == "plate" and edge_norm == "free" and sample_width_mm < 200.0:
-            entrain_boost = 1.0 + 0.25 * min(delta_f_prelim / max(W, 0.005), 0.6)
+            entrain_boost = 1.0 + LATERAL_O2_ENTRAIN_COEFF * min(delta_f_prelim / max(W, 0.005), 0.6)
         elif geom_norm in ("rod", "cylinder", "sphere"):
             # Cylindrical/spherical geometry allows radial 3D diffusive O2 transport
             entrain_boost = 1.22 if geom_norm == "sphere" else 1.18
@@ -388,7 +413,7 @@ class FireModel:
         # Note: Under sustained burning, luminous flame radiation balances surface re-radiation
         # (de Ris, 1969; Quintiere, 2006), while q_surf_rad_loss governs radiative quenching
         # near extinction (Bhattacharjee et al., 1996).
-        q_rad_feedback = 0.55 * q_conv * max(0.0, (X_O2 - X_O2_AIR) / X_O2_AIR)
+        q_rad_feedback = RAD_FEEDBACK_COEFF * q_conv * max(0.0, (X_O2 - X_O2_AIR) / X_O2_AIR)
         if p_ratio < 1.0:
             # Thicker flame standoff at low pressure raises radiative feedback share
             q_rad_feedback *= (1.0 / p_ratio) ** LOW_P_RAD_FEEDBACK_EXP
@@ -433,11 +458,11 @@ class FireModel:
         #   V_f,thin = (q_net * L_ph) / (rho_s * c_s * tau * (T_pyro - T_inf))
         # In concurrent flow, flame plume elongation scales with forced flow ~(V_eff / 0.20)^0.55
         # (Jomaas et al., 2015; Olson & Ferkul, 2019, Saffire-I vs Saffire-III S1).
-        conc_vel_scale = ((V_eff / 0.20) ** 0.55) if (is_concurrent and is_microgravity) else 1.0
+        conc_vel_scale = ((V_eff / 0.20) ** CONCURRENT_VEL_EXP) if (is_concurrent and is_microgravity) else 1.0
         f_conc_thin = (F_CONCURRENT_THIN_MICROG * conc_vel_scale) if is_microgravity else F_CONCURRENT_THIN_BUOYANT
         f_cfg_thin = f_conc_thin if is_concurrent else 1.0
         v_crit_thin = FLOW_STRAIN_CRITICAL_THIN_CMS / 100.0
-        strain_thin = (v_crit_thin / V_forced) ** 0.58 if V_forced > v_crit_thin else 1.0
+        strain_thin = (v_crit_thin / V_forced) ** STRAIN_EXPONENT_THIN if V_forced > v_crit_thin else 1.0
         L_ph_thin = L_PH_THIN_BASELINE_M * f_cfg_thin * strain_thin
         V_f_thin = (q_net * L_ph_thin) / (rho_s * c_s * tau * dT_pyro)
 
@@ -466,7 +491,7 @@ class FireModel:
             if edge_norm == "free" and sample_width_mm < 200.0:
                 # Two-sided corner heating at free lateral edges accelerates front speed
                 # on narrow sheets (<200 mm). Ref: BASS-II (50 mm) vs Saffire (410 mm) scaling.
-                V_f_ms *= (200.0 / sample_width_mm) ** 0.20
+                V_f_ms *= (200.0 / sample_width_mm) ** NARROW_SHEET_EDGE_EXP
         elif geom_norm in ("rod", "cylinder"):
             # Diameter-aware curvature: speed-up grows as the flame standoff becomes
             # comparable to the rod diameter (thickness_mm is the rod diameter here).
@@ -474,12 +499,12 @@ class FireModel:
             V_f_ms *= ROD_CURVATURE_BASE * (1.0 + ROD_CURVATURE_SLOPE * ratio)
         elif geom_norm == "sphere":
             # Spherical PMMA geometry (BASS-II sphere tests) exhibits 3D radial curvature heat focus
-            V_f_ms *= 1.85
+            V_f_ms *= SPHERE_CURVATURE_MULT
 
         # Low-flow microgravity boost for thin fuels (BASS-II narrow sample regime, < 5 cm/s)
         thin_weight = 1.0 - thick_blend
         if thin_weight > 0.01 and flow_vel_cms < 5.0:
-            boost = (5.0 / max(flow_vel_cms, 0.5)) ** 0.15
+            boost = (5.0 / max(flow_vel_cms, 0.5)) ** LOW_FLOW_BOOST_EXP
             V_f_ms *= (1.0 + thin_weight * (boost - 1.0))
 
         # Near-LOI Damkohler slowdown as O2 approaches extinction threshold
@@ -491,6 +516,7 @@ class FireModel:
         return {
             "material": material_name,
             "flame_spread_mms": spread_mms,
+            "flame_spread_mms_raw": V_f_ms * 1000.0,   # unrounded; internal use (finite differences, calibration)
             "v_eff_cms": v_eff_cms,
             "flame_temp_K": round(T_eff, 1),
             "effective_flame_temp_K": round(T_eff, 1),
@@ -527,6 +553,18 @@ class FireModel:
         Main single-point prediction API returning steady-state flame spread rate [mm/s],
         heat fluxes [kW/m^2], 1-sigma propagated uncertainty, and Saffire applicability score.
         """
+        res = self._predict_with_raw(
+            material_name, g_level=g_level, pressure_kPa=pressure_kPa, oxygen_pct=oxygen_pct,
+            flow_vel_cms=flow_vel_cms, thickness_mm=thickness_mm, configuration=configuration,
+            sample_width_mm=sample_width_mm, geometry=geometry, edge_boundary=edge_boundary, **kwargs)
+        res.pop("flame_spread_mms_raw", None)   # keep the public response schema unchanged
+        return res
+
+    def _predict_with_raw(self, material_name, g_level=0.0, pressure_kPa=101.3,
+                          oxygen_pct=21.0, flow_vel_cms=20.0, thickness_mm=10.0,
+                          configuration="Opposed", sample_width_mm=410.0,
+                          geometry="plate", edge_boundary="free", **kwargs):
+        """Same as predict() but also returns 'flame_spread_mms_raw' (unrounded)."""
         if kwargs:
             raise TypeError(
                 f"Unexpected keyword arguments: {list(kwargs.keys())}. "
@@ -555,7 +593,7 @@ class FireModel:
         res.setdefault("edge_boundary", edge_boundary.lower().strip())
         if not res["is_extinct"]:
             res["flame_spread_uncertainty_mms"] = self._compute_uncertainty_mms(
-                material_name, res["flame_spread_mms"], params, res["applicability_score"]
+                material_name, self._raw_spread(res), params, res["applicability_score"]
             )
         else:
             res["flame_spread_uncertainty_mms"] = 0.0
@@ -563,7 +601,8 @@ class FireModel:
 
     def applicability(self, material_name, g_level, oxygen_pct, flow_vel_cms, thickness_mm, pressure_kPa=101.3):
         """
-        Model Applicability & Domain Validation Envelope (NASA-STD-7009A V&V Credibility Framework).
+        Model Applicability & Domain Validation Envelope (inspired by the NASA-STD-7009A credibility
+        factors; a distance-from-validated-envelope score, not a compliance assessment).
         Evaluates continuous distance outside the Saffire I-VI flight validation envelope:
           - Gravity: <= 0.01g (0g flight calibration)
           - Oxygen: 12% - 30%
@@ -619,7 +658,7 @@ class FireModel:
 
     def sensitivity(self, material_name, baseline, perturbation=0.10):
         """Local One-at-a-Time (OAT) finite-difference parameter sensitivity ranking."""
-        base = self.predict(material_name, **baseline)["flame_spread_mms"]
+        base = self._raw_spread(self._predict_with_raw(material_name, **baseline))
         if base <= 1e-6:
             return []
 
@@ -646,8 +685,8 @@ class FireModel:
             else:
                 continue
 
-            low = self.predict(material_name, **low_cfg)["flame_spread_mms"]
-            high = self.predict(material_name, **high_cfg)["flame_spread_mms"]
+            low = self._raw_spread(self._predict_with_raw(material_name, **low_cfg))
+            high = self._raw_spread(self._predict_with_raw(material_name, **high_cfg))
             delta = high - low
 
             results.append({

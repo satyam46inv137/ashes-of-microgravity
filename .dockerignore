@@ -8,8 +8,6 @@ venv/
 .git/
 .gitignore
 README.md
-ai/chroma_db/
-ai/models/*.pkl
-ai/calibration_data.csv
 .notebooks/
 .pytest_cache/
+*.md

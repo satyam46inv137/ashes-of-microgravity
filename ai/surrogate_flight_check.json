@@ -1,0 +1,158 @@
+{
+  "rows": [
+    {
+      "run_id": "Saffire-I_S1",
+      "flight": 0.224,
+      "physics": 0.22133801600128244,
+      "surrogate": 0.21277113258838654,
+      "surrogate_std": 0.01210075244307518,
+      "err_physics_vs_flight": 1.1883857137131963,
+      "err_surrogate_vs_flight": 5.012887237327441,
+      "err_surrogate_vs_physics": 3.870497968521717
+    },
+    {
+      "run_id": "Saffire-I_S2",
+      "flight": 1.343,
+      "physics": 1.3414425212198937,
+      "surrogate": 1.3244432210922241,
+      "surrogate_std": 0.06679752469062805,
+      "err_physics_vs_flight": 0.11597012510098724,
+      "err_surrogate_vs_flight": 1.3817407973027438,
+      "err_surrogate_vs_physics": 1.26724029235413
+    },
+    {
+      "run_id": "Saffire-II_S8",
+      "flight": 0.048,
+      "physics": 0.0478884666316944,
+      "surrogate": 0.04904938489198685,
+      "surrogate_std": 0.001069419551640749,
+      "err_physics_vs_flight": 0.23236118396999642,
+      "err_surrogate_vs_flight": 2.186218524972596,
+      "err_surrogate_vs_physics": 2.4242126381305025
+    },
+    {
+      "run_id": "Saffire-II_S7",
+      "flight": 0.038,
+      "physics": 0.04147262865133076,
+      "surrogate": 0.04224039986729622,
+      "surrogate_std": 0.0011154564563184977,
+      "err_physics_vs_flight": 9.138496450870418,
+      "err_surrogate_vs_flight": 11.158947019200578,
+      "err_surrogate_vs_physics": 1.8512721303978048
+    },
+    {
+      "run_id": "Saffire-V_S6",
+      "flight": 0.021,
+      "physics": 0.022241343724390277,
+      "surrogate": 0.02308453992009163,
+      "surrogate_std": 0.000641040678601712,
+      "err_physics_vs_flight": 5.911160592334647,
+      "err_surrogate_vs_flight": 9.926380571864893,
+      "err_surrogate_vs_physics": 3.7911207440973405
+    },
+    {
+      "run_id": "Saffire-III_S1",
+      "flight": 0.285,
+      "physics": 0.2797766891166292,
+      "surrogate": 0.2789638936519623,
+      "surrogate_std": 0.01706649735569954,
+      "err_physics_vs_flight": 1.8327406608318604,
+      "err_surrogate_vs_flight": 2.117932051943051,
+      "err_surrogate_vs_physics": 0.2905157921602493
+    },
+    {
+      "run_id": "Saffire-III_S2",
+      "flight": 1.48,
+      "physics": 1.4997783326781935,
+      "surrogate": 1.503889799118042,
+      "surrogate_std": 0.06916378438472748,
+      "err_physics_vs_flight": 1.3363738296076697,
+      "err_surrogate_vs_flight": 1.6141756160839196,
+      "err_surrogate_vs_physics": 0.27413827432128224
+    },
+    {
+      "run_id": "Saffire-IV_S2",
+      "flight": 0.41,
+      "physics": 0.4034411047064933,
+      "surrogate": 0.38708311319351196,
+      "surrogate_std": 0.04693550616502762,
+      "err_physics_vs_flight": 1.5997305593918714,
+      "err_surrogate_vs_flight": 5.589484586948297,
+      "err_surrogate_vs_physics": 4.0546169743615765
+    },
+    {
+      "run_id": "Saffire-V_S4",
+      "flight": 0.075,
+      "physics": 0.061221285907592876,
+      "surrogate": 0.060173630714416504,
+      "surrogate_std": 0.0005856589414179325,
+      "err_physics_vs_flight": 18.371618789876162,
+      "err_surrogate_vs_flight": 19.768492380777992,
+      "err_surrogate_vs_physics": 1.7112596993759623
+    },
+    {
+      "run_id": "BASS-II_B1",
+      "flight": 0.92,
+      "physics": 0.7782609312150944,
+      "surrogate": 0.7569780349731445,
+      "surrogate_std": 0.090606190264225,
+      "err_physics_vs_flight": 15.406420520098434,
+      "err_surrogate_vs_flight": 17.719778807266902,
+      "err_surrogate_vs_physics": 2.7346736021710654
+    },
+    {
+      "run_id": "BASS-II_B2",
+      "flight": 0.76,
+      "physics": 0.8080242346367091,
+      "surrogate": 0.8227056264877319,
+      "surrogate_std": 0.10876089334487915,
+      "err_physics_vs_flight": 6.318978241672253,
+      "err_surrogate_vs_flight": 8.250740327333148,
+      "err_surrogate_vs_physics": 1.8169494455353319
+    },
+    {
+      "run_id": "BASS-II_B5",
+      "flight": 0.052,
+      "physics": 0.05603902611596349,
+      "surrogate": 0.06524573266506195,
+      "surrogate_std": 0.01114684995263815,
+      "err_physics_vs_flight": 7.767357915314404,
+      "err_surrogate_vs_flight": 25.472562817426837,
+      "err_surrogate_vs_physics": 16.429098054000274
+    },
+    {
+      "run_id": "BASS-II_B9",
+      "flight": 0.031,
+      "physics": 0.02816038908829776,
+      "surrogate": 0.03549058735370636,
+      "surrogate_std": 0.006023423746228218,
+      "err_physics_vs_flight": 9.160035199039486,
+      "err_surrogate_vs_flight": 14.485765657117291,
+      "err_surrogate_vs_physics": 26.03017395258475
+    }
+  ],
+  "summary": {
+    "physics_vs_flight_in_sample": {
+      "n": 13,
+      "MAPE": 6.029202290909338,
+      "median": 5.911160592334647,
+      "max": 18.371618789876162,
+      "within_30pct": 1.0
+    },
+    "surrogate_vs_flight": {
+      "n": 13,
+      "MAPE": 9.59116203042813,
+      "median": 8.250740327333148,
+      "max": 25.472562817426837,
+      "within_30pct": 1.0
+    },
+    "surrogate_vs_physics": {
+      "n": 13,
+      "MAPE": 5.1189053513855365,
+      "median": 2.4242126381305025,
+      "max": 26.03017395258475,
+      "within_30pct": 1.0
+    }
+  },
+  "caveat": "in-sample for physics; emulator fidelity check"
+}
