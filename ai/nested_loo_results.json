@@ -1,0 +1,339 @@
+{
+  "config": {
+    "csv": "ai/calibration_data_1d.csv",
+    "mode": "both",
+    "mission_col": null,
+    "include_excluded": false,
+    "prior_weight": 0.0,
+    "maxiter": 150,
+    "popsize": 15,
+    "workers": 4,
+    "seed": 0,
+    "out": "ai/nested_loo_results.json"
+  },
+  "n_params": 11,
+  "n_runs": 13,
+  "in_sample_with_tuned_constants": {
+    "n": 13,
+    "MAPE": 5.903451371657517,
+    "median_APE": 4.761904761904749,
+    "P95_APE": 16.727536231884052,
+    "max_APE": 18.666666666666664,
+    "within_20pct": 1.0,
+    "within_30pct": 1.0
+  },
+  "nested_loo": {
+    "nested": {
+      "n": 13,
+      "MAPE": 9.363256582983489,
+      "median_APE": 8.333333333333341,
+      "P95_APE": 19.98785425101215,
+      "max_APE": 21.15384615384616,
+      "within_20pct": 0.9230769230769231,
+      "within_30pct": 1.0
+    },
+    "baseline_geomean_of_train": {
+      "n": 13,
+      "MAPE": 238.7409733604484,
+      "median_APE": 89.97486258214184,
+      "P95_APE": 699.2226919057962,
+      "max_APE": 907.2477132078859,
+      "within_20pct": 0.0,
+      "within_30pct": 0.07692307692307693
+    },
+    "per_run": [
+      {
+        "run_id": "Saffire-I_S1",
+        "actual": 0.224,
+        "pred": 0.226,
+        "ape": 0.8928571428571437
+      },
+      {
+        "run_id": "Saffire-I_S2",
+        "actual": 1.343,
+        "pred": 1.364,
+        "ape": 1.563663440059578
+      },
+      {
+        "run_id": "Saffire-II_S8",
+        "actual": 0.048,
+        "pred": 0.044,
+        "ape": 8.333333333333341
+      },
+      {
+        "run_id": "Saffire-II_S7",
+        "actual": 0.038,
+        "pred": 0.04,
+        "ape": 5.263157894736847
+      },
+      {
+        "run_id": "Saffire-V_S6",
+        "actual": 0.021,
+        "pred": 0.021,
+        "ape": 0.0
+      },
+      {
+        "run_id": "Saffire-III_S1",
+        "actual": 0.285,
+        "pred": 0.281,
+        "ape": 1.4035087719298063
+      },
+      {
+        "run_id": "Saffire-III_S2",
+        "actual": 1.48,
+        "pred": 1.518,
+        "ape": 2.5675675675675698
+      },
+      {
+        "run_id": "Saffire-IV_S2",
+        "actual": 0.41,
+        "pred": 0.459,
+        "ape": 11.951219512195134
+      },
+      {
+        "run_id": "Saffire-V_S4",
+        "actual": 0.075,
+        "pred": 0.064,
+        "ape": 14.66666666666666
+      },
+      {
+        "run_id": "BASS-II_B1",
+        "actual": 0.92,
+        "pred": 0.749,
+        "ape": 18.586956521739133
+      },
+      {
+        "run_id": "BASS-II_B2",
+        "actual": 0.76,
+        "pred": 0.906,
+        "ape": 19.210526315789476
+      },
+      {
+        "run_id": "BASS-II_B5",
+        "actual": 0.052,
+        "pred": 0.063,
+        "ape": 21.15384615384616
+      },
+      {
+        "run_id": "BASS-II_B9",
+        "actual": 0.031,
+        "pred": 0.026,
+        "ape": 16.12903225806452
+      }
+    ],
+    "param_stability": {
+      "L_PH_THIN_BASELINE_M": {
+        "mean": 0.008362660787076346,
+        "cv": 0.03243649033183178,
+        "frac_at_bound": 0.0
+      },
+      "F_CONCURRENT_THIN_MICROG": {
+        "mean": 0.16555206435761574,
+        "cv": 0.016788254185674038,
+        "frac_at_bound": 0.0
+      },
+      "STRAIN_EXPONENT_THICK": {
+        "mean": 1.1706285912830172,
+        "cv": 0.41806795776305705,
+        "frac_at_bound": 0.0
+      },
+      "RAD_LOSS_COEFF_MICROG": {
+        "mean": 0.298568488091532,
+        "cv": 0.010432334959088957,
+        "frac_at_bound": 0.0
+      },
+      "ROD_CURVATURE_BASE": {
+        "mean": 1.339427196909355,
+        "cv": 0.11158441465077068,
+        "frac_at_bound": 0.0
+      },
+      "ROD_CURVATURE_SLOPE": {
+        "mean": 0.7021597960649153,
+        "cv": 0.4642007204055212,
+        "frac_at_bound": 0.15384615384615385
+      },
+      "LOW_P_RAD_FEEDBACK_EXP": {
+        "mean": 1.1032679141625317,
+        "cv": 0.11665910695145626,
+        "frac_at_bound": 0.0
+      },
+      "THERMAL_DEPTH_COEFF": {
+        "mean": 3294.7482443985627,
+        "cv": 0.23306579100997835,
+        "frac_at_bound": 0.0
+      },
+      "THERMAL_DEPTH_V_EXP": {
+        "mean": 0.3972688341335771,
+        "cv": 0.3565692305593745,
+        "frac_at_bound": 0.3076923076923077
+      },
+      "THIN_THICK_RATIO_LO": {
+        "mean": 0.2777382700276781,
+        "cv": 0.6415548524373273,
+        "frac_at_bound": 0.8461538461538461
+      },
+      "THIN_THICK_RATIO_HI": {
+        "mean": 2.8148866962122003,
+        "cv": 0.11936373517116682,
+        "frac_at_bound": 0.38461538461538464
+      }
+    }
+  },
+  "nested_lomo": {
+    "nested": {
+      "n": 13,
+      "MAPE": 5.390500842411498,
+      "median_APE": 4.0000000000000036,
+      "P95_APE": 13.083775185577945,
+      "max_APE": 14.782608695652174,
+      "within_20pct": 1.0,
+      "within_30pct": 1.0
+    },
+    "baseline_geomean_of_train": {
+      "n": 13,
+      "MAPE": 252.3368490634162,
+      "median_APE": 90.55247041275987,
+      "P95_APE": 704.8527507444794,
+      "max_APE": 1006.8076123952037,
+      "within_20pct": 0.0,
+      "within_30pct": 0.0
+    },
+    "per_run": [
+      {
+        "run_id": "BASS-II_B1",
+        "actual": 0.92,
+        "pred": 0.784,
+        "ape": 14.782608695652174
+      },
+      {
+        "run_id": "BASS-II_B2",
+        "actual": 0.76,
+        "pred": 0.814,
+        "ape": 7.105263157894728
+      },
+      {
+        "run_id": "BASS-II_B5",
+        "actual": 0.052,
+        "pred": 0.055,
+        "ape": 5.7692307692307745
+      },
+      {
+        "run_id": "BASS-II_B9",
+        "actual": 0.031,
+        "pred": 0.028,
+        "ape": 9.677419354838706
+      },
+      {
+        "run_id": "Saffire-I_S1",
+        "actual": 0.224,
+        "pred": 0.23,
+        "ape": 2.678571428571431
+      },
+      {
+        "run_id": "Saffire-I_S2",
+        "actual": 1.343,
+        "pred": 1.367,
+        "ape": 1.7870439314966509
+      },
+      {
+        "run_id": "Saffire-II_S8",
+        "actual": 0.048,
+        "pred": 0.045,
+        "ape": 6.250000000000005
+      },
+      {
+        "run_id": "Saffire-II_S7",
+        "actual": 0.038,
+        "pred": 0.039,
+        "ape": 2.6315789473684235
+      },
+      {
+        "run_id": "Saffire-III_S1",
+        "actual": 0.285,
+        "pred": 0.28,
+        "ape": 1.7543859649122628
+      },
+      {
+        "run_id": "Saffire-III_S2",
+        "actual": 1.48,
+        "pred": 1.505,
+        "ape": 1.689189189189183
+      },
+      {
+        "run_id": "Saffire-IV_S2",
+        "actual": 0.41,
+        "pred": 0.459,
+        "ape": 11.951219512195134
+      },
+      {
+        "run_id": "Saffire-V_S6",
+        "actual": 0.021,
+        "pred": 0.021,
+        "ape": 0.0
+      },
+      {
+        "run_id": "Saffire-V_S4",
+        "actual": 0.075,
+        "pred": 0.072,
+        "ape": 4.0000000000000036
+      }
+    ],
+    "param_stability": {
+      "L_PH_THIN_BASELINE_M": {
+        "mean": 0.008260849262344718,
+        "cv": 0.01644037524857525,
+        "frac_at_bound": 0.0
+      },
+      "F_CONCURRENT_THIN_MICROG": {
+        "mean": 0.16606349968377057,
+        "cv": 0.012049247846321158,
+        "frac_at_bound": 0.0
+      },
+      "STRAIN_EXPONENT_THICK": {
+        "mean": 1.1584088317776662,
+        "cv": 0.38471522954251497,
+        "frac_at_bound": 0.16666666666666666
+      },
+      "RAD_LOSS_COEFF_MICROG": {
+        "mean": 0.299211291705993,
+        "cv": 0.007219927828622072,
+        "frac_at_bound": 0.0
+      },
+      "ROD_CURVATURE_BASE": {
+        "mean": 1.2580178891173792,
+        "cv": 0.04277242483498897,
+        "frac_at_bound": 0.0
+      },
+      "ROD_CURVATURE_SLOPE": {
+        "mean": 0.8940288744650385,
+        "cv": 0.10465573668060738,
+        "frac_at_bound": 0.0
+      },
+      "LOW_P_RAD_FEEDBACK_EXP": {
+        "mean": 1.1208518721886491,
+        "cv": 0.042188161346256144,
+        "frac_at_bound": 0.0
+      },
+      "THERMAL_DEPTH_COEFF": {
+        "mean": 3293.7229722527295,
+        "cv": 0.17894455482678612,
+        "frac_at_bound": 0.0
+      },
+      "THERMAL_DEPTH_V_EXP": {
+        "mean": 0.4521620271572915,
+        "cv": 0.29207767842208454,
+        "frac_at_bound": 0.3333333333333333
+      },
+      "THIN_THICK_RATIO_LO": {
+        "mean": 0.3464193397590614,
+        "cv": 0.8584521382483036,
+        "frac_at_bound": 0.6666666666666666
+      },
+      "THIN_THICK_RATIO_HI": {
+        "mean": 2.729950048963588,
+        "cv": 0.08556778469735013,
+        "frac_at_bound": 0.16666666666666666
+      }
+    }
+  }
+}

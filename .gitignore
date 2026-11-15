@@ -1,0 +1,14 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+ai/chroma_db/
+ai/models/*.pkl
+.env.*
+ai/papers/*.pdf

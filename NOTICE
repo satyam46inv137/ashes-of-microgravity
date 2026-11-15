@@ -1,0 +1,11 @@
+Ashes of Microgravity — Spacecraft Fire Safety, 2D PDE & Crew Toxicology Platform
+Copyright 2026 Satyam Sharma (B.Tech CSE - Data Science) & Shivam Sharma (MBBS)
+
+Original Repository: https://github.com/satyam46inv137/ashes-of-microgravity
+Created for: NASA International Space Apps Challenge 2026 (Flame in Freefall)
+
+ATTRIBUTION REQUIREMENT (Apache License 2.0, Section 4d):
+Any redistribution, fork, hosted deployment, or derivative work using this
+physics engine, 41-feature neural surrogate, 2D thermal-pyrolysis solver,
+or NASA SMAC crew toxicology module MUST retain this NOTICE file and display
+clear attribution to the original authors in its documentation and user interface.

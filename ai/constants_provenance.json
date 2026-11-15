@@ -1,0 +1,743 @@
+{
+  "schema_version": "2.0.0",
+  "description": "Comprehensive provenance registry for microgravity, normal gravity, and Quasi-2D/2D flame spread constants across backend/fire_model.py, backend/materials.py, ai/surrogate.py, and main.py.",
+  "categories": {
+    "category_1": "Universal Physical & Thermodynamic Constants",
+    "category_2": "Calibration & Empirical Microgravity Flame Spread Constants",
+    "category_3": "Engineering Bounds & Computational Thresholds",
+    "category_4": "Heuristic Applicability Penalties"
+  },
+  "uncertainty_semantics": {
+    "ensemble_disagreement": "Standard deviation across 5 surrogate models. Represents epistemic uncertainty (model disagreement), NOT real-world error.",
+    "physics_uncertainty": "First-order Taylor series error propagation (Kline & McClintock, 1953 / ISO GUM) combining input measurement tolerances (O2 +-1.5%, flow +-5%, thickness +-2%, pressure +-1%) with applicability-scaled model-form uncertainty.",
+    "confidence_interval_multiplier": "1.96 x std under Gaussian assumption (95% CI). Does NOT include systematic physics error.",
+    "applicability_score": "Continuous distance-based heuristic score (0-100) aligned with NASA-STD-7009A V&V credibility envelopes. Higher score = closer to Saffire I-VI / BASS-II flight-validated envelope.",
+    "caveat": "In-sample calibration against 13 Saffire/BASS flight points (2.83% core MAPE, 5.90% combined MAPE); leave-one-out out-of-sample MAPE 4.15% (core 5) and 6.68% (all 13). NOTE: ROD_CURVATURE_*, LOW_P_RAD_FEEDBACK_EXP and THERMAL_DEPTH_* / THIN_THICK_RATIO_* were tuned on the full 13-point set and are NOT refit inside LOO, so LOO is optimistic for them."
+  },
+  "constants": {
+    "T_AMBIENT_K": {
+      "category": "category_1",
+      "value": 298.15,
+      "unit": "K",
+      "derivation": "Standard reference ambient temperature (25.0 C / 298.15 K) for standard-state thermodynamic and transport property evaluations.",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "NIST Chemistry WebBook, SRD 69; ISO 80000-5:2019"
+    },
+    "PRESSURE_REF_KPA": {
+      "category": "category_1",
+      "value": 101.3,
+      "unit": "kPa",
+      "derivation": "Standard sea-level atmospheric pressure (1 atm = 101.325 kPa), baseline for NASA terrestrial testing and nominal ISS baseline atmosphere.",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "NASA-STD-3001 Vol 2; CODATA / IUPAC STP conventions"
+    },
+    "X_O2_AIR": {
+      "category": "category_1",
+      "value": 0.21,
+      "unit": "mole_fraction",
+      "derivation": "Dry sea-level atmospheric oxygen mole fraction used as standard baseline oxidizer concentration.",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "US Standard Atmosphere (1976), NOAA/NASA/USAF"
+    },
+    "NU_AIR_300K": {
+      "category": "category_1",
+      "value": 1.8e-05,
+      "unit": "m^2/s",
+      "derivation": "Kinematic viscosity of air at ~300 K and 101.3 kPa (nu = mu/rho, approx 1.846e-5 m^2/s).",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer, Appendix A (Air properties at 300 K)"
+    },
+    "K_AIR_300K": {
+      "category": "category_1",
+      "value": 0.026,
+      "unit": "W/(m*K)",
+      "derivation": "Thermal conductivity of dry air at 300 K (k approx 0.0263 W/(m K)).",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer, Table A.4"
+    },
+    "gas_conductivity_temp_exp": {
+      "category": "category_1",
+      "value": 0.7,
+      "unit": "dimensionless",
+      "derivation": "Power-law temperature scaling of gas thermal conductivity, k_g = K_AIR_300K * (T_eff / 300.0)^0.7. Standard approximation for air across combustion boundary layers.",
+      "confidence": "MEDIUM",
+      "status": "engineering_approximation",
+      "reference": "Standard power-law gas transport approximation; no specific single-paper citation."
+    },
+    "X_REF_M": {
+      "category": "category_1",
+      "value": 0.01,
+      "unit": "m",
+      "derivation": "Characteristic reference boundary layer / sample width scale (10 mm) for non-dimensional Reynolds and Grashof evaluations. NOTE: This is a conventional choice, not a uniquely derived constant. Different reference lengths would change non-dimensional numbers but not physical behavior.",
+      "confidence": "PHYSICALLY_MOTIVATED",
+      "status": "conventional_scale",
+      "reference": "Fernandez-Pello, A. C. (1995), 'The Solid Fuel Microgravity Flame Spread', Prog. Energy Combust. Sci."
+    },
+    "CONFIDENCE_Z_95": {
+      "category": "category_1",
+      "value": 1.96,
+      "unit": "dimensionless",
+      "derivation": "Two-tailed critical Z-score for 95% confidence interval under Gaussian assumption.",
+      "confidence": "STATISTICAL_STANDARD",
+      "status": "universal_constant",
+      "usage_note": "Used ONLY as 95% CI multiplier for ensemble disagreement (std x 1.96). NOT a real-world uncertainty estimate. See uncertainty_semantics block.",
+      "reference": "NIST/SEMATECH e-Handbook of Statistical Methods, Section 1.3.5.7"
+    },
+    "T_FLAME_MAX_K": {
+      "category": "category_2",
+      "value": 1800.0,
+      "unit": "K",
+      "derivation": "Effective flame temperature ceiling (not true adiabatic) for near-limit microgravity diffusion burning of cellulosic/acrylic polymers prior to radiative extinction. Represents the effective reaction-zone temperature including radiative losses.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_literature",
+      "reference": "Urban, D. L. et al. (2019), Saffire-I/II Final Reports, NASA NTRS; typical values for diffusion flames in reduced gravity range 1600-2000 K."
+    },
+    "MICROGRAVITY_THRESHOLD_G": {
+      "category": "category_2",
+      "value": 0.01,
+      "unit": "g0",
+      "derivation": "Operational boundary (1e-2 g0) below which buoyant convection velocities fall below typical forced ventilation levels, making buoyancy negligible relative to diffusive/forced flow.",
+      "confidence": "HIGH",
+      "status": "nasa_standard_definition",
+      "reference": "NASA microgravity science operational definitions; Saffire experiment operations guidelines"
+    },
+    "QUIESCENT_FLOW_CMS": {
+      "category": "category_2",
+      "value": 0.5,
+      "unit": "cm/s",
+      "derivation": "Critical lower air velocity limit below which excessive radiative heat loss extinguishes microgravity flames due to insufficient convective oxygen supply (radiative quench boundary).",
+      "confidence": "HIGH",
+      "status": "derived_from_flight_data",
+      "reference": "Derived from Saffire-I and BASS-II low-flow radiative quench observations (NASA NTRS). Exact paper volume/DOI pending verification."
+    },
+    "FLOW_STRAIN_CRITICAL_CMS": {
+      "category": "category_2",
+      "value": 20.0,
+      "unit": "cm/s",
+      "derivation": "Onset threshold where aerodynamic stretch and reduced residence time in the gas-phase reaction zone induce convective flame stabilization strain.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "Saffire flow-velocity sweep results (S5/S6 sample analysis) - exact paper citation pending verification against published strain-rate curves."
+    },
+    "BLOWOFF_FLOW_CMS": {
+      "category": "category_2",
+      "value": 50.0,
+      "unit": "cm/s",
+      "derivation": "Critical cross-flow blow-off limit where flow residence time is shorter than chemical reaction induction time (Damkohler extinction limit, Da < Da_c).",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "Saffire-IV/V/VI extinction datasets; Ruff, G. A. et al., 'Large-scale fire safety tests aboard Cygnus', NASA TM - exact value pending verification against published blow-off curves."
+    },
+    "L_PH_THIN_BASELINE_M": {
+      "category": "category_2",
+      "value": 0.0078,
+      "unit": "m",
+      "derivation": "Characteristic thermal preheat length parameter (7.8 mm) for thin SIBAL fuel when explicit Stefan-Boltzmann solid surface radiative cooling (q_surf = eps*sigma*(T_pyro^4 - T_inf^4)) is included in the net heat flux balance, restoring exact Saffire-I S2 flight parity (1.343 mm/s).",
+      "confidence": "MEDIUM",
+      "status": "analytical_fit_to_flight_data",
+      "reference": "Olson, S. L., Ferkul, P. V., et al., 'Flame spread: Effects of microgravity and scale', Combustion and Flame, Vol. 199, January 2019, pp. 168-182. DOI: 10.1016/j.combustflame.2018.10.012 - theoretical framework from Fernandez-Pello, A. C. (1995), Prog. Energy Combust. Sci."
+    },
+    "F_CONCURRENT_THIN_MICROG": {
+      "category": "category_2",
+      "value": 0.165,
+      "unit": "dimensionless",
+      "derivation": "Flight ratio of concurrent-to-opposed flame spread rate over thin SIBAL fabric in low-velocity microgravity, computed from Saffire-I Sample 1 (concurrent, v_f approx 0.224 mm/s) and Sample 2 (opposed, v_f approx 1.343 mm/s), yielding 0.224 / 1.343 = 0.1668 approx 0.165.",
+      "confidence": "HIGH",
+      "status": "derived_from_flight_data",
+      "reference": "Olson, S. L., Ferkul, P. V., et al., 'Flame spread: Effects of microgravity and scale', Combustion and Flame, Vol. 199, January 2019, pp. 168-182. DOI: 10.1016/j.combustflame.2018.10.012 - Saffire-I S1 (concurrent, v_f approx 0.224 mm/s) and S2 (opposed, v_f approx 1.343 mm/s) reported in this paper."
+    },
+    "F_CONCURRENT_THICK_MICROG": {
+      "category": "category_2",
+      "value": 0.4,
+      "unit": "dimensionless",
+      "derivation": "Ratio of microgravity concurrent to opposed flame spread for thick PMMA (10 mm), order-of-magnitude estimate from Saffire-II multi-sample data where boundary-layer detachment slows concurrent advance.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "Saffire-II summary report (2018), NASA Glenn Research Center. Order-of-magnitude estimate pending tighter calibration."
+    },
+    "F_CONCURRENT_THIN_BUOYANT": {
+      "category": "category_2",
+      "value": 3.8,
+      "unit": "dimensionless",
+      "derivation": "Upward (concurrent) to downward (opposed) flame spread ratio under normal gravity (1g) for thin cellulosic fuels. Buoyancy preheats unburned fuel ahead of the flame front.",
+      "confidence": "HIGH",
+      "status": "derived_from_terrestrial_benchmarks",
+      "reference": "Fernandez-Pello & Hirano, 'Controlling Mechanisms of Flame Spread', Combust. Sci. Tech. 32 (1983); Quintiere, J. G., Fundamentals of Fire Phenomena, Wiley (2006)"
+    },
+    "F_CONCURRENT_THICK_BUOYANT": {
+      "category": "category_2",
+      "value": 5.2,
+      "unit": "dimensionless",
+      "derivation": "Upward to downward flame spread ratio for thick polymers (e.g., PMMA) in 1g. Buoyant turbulent flame plume bathes solid fuel, driving rapid radiative/convective preheating.",
+      "confidence": "HIGH",
+      "status": "derived_from_terrestrial_benchmarks",
+      "reference": "de Ris, J. (1969), 'Spread of a Laminar Diffusion Flame', 12th Int. Symp. Combust.; Quintiere, J. G., 'A theoretical basis for flammability metric', Fire and Materials (2002)"
+    },
+    "LOI_MICROG_FACTOR_DEFAULT": {
+      "category": "category_2",
+      "value": 0.85,
+      "unit": "dimensionless",
+      "derivation": "Reduction factor for Limiting Oxygen Index (LOI) in microgravity (LOI_ug approx 0.85 x LOI_1g). Absence of buoyant convective cooling allows materials to sustain burn at lower ambient O2 concentrations under low forced flow.",
+      "confidence": "HIGH",
+      "status": "derived_from_flight_data",
+      "reference": "Semi-empirical reduction factor based on BASS-II microgravity vs. normal-gravity flammability limit observations (NASA NTRS). Exact citation pending verification."
+    },
+    "flame_temp_o2_scaling_exp": {
+      "category": "category_2",
+      "value": 0.42,
+      "unit": "dimensionless",
+      "derivation": "Sub-linear exponent scaling flame temperature with oxygen mole fraction (T_f proportional to (X_O2)^0.42), capturing non-stoichiometric dissociation and radiative damping at elevated oxygen levels. Semi-empirical fit, NOT a rigorous theoretical value.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "Calibrated against NASA-STD-6001B flammability test atmospheric sweeps; theoretical grounding in Glassman & Yetter, Combustion (4th ed.). Specific exponent value is this model's empirical fit."
+    },
+    "flame_temp_pressure_term": {
+      "category": "category_2",
+      "value": 1.2,
+      "unit": "dimensionless",
+      "derivation": "Dimensionless pressure-scaling pre-factor accounting for three-body collision recombination reactions and radical pool concentrations at higher total pressures. Semi-empirical.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "Empirical fit; theoretical grounding in Kashiwagi, T. et al., 'Combustion of Solids under Variable Pressure', Combust. Flame (1990)"
+    },
+    "flame_temp_pressure_exp": {
+      "category": "category_2",
+      "value": 0.25,
+      "unit": "dimensionless",
+      "derivation": "Pressure exponent (P^0.25) matching observed flame temperature and reaction-zone density changes over spacecraft exploration pressures (approx 50 to 101 kPa). Semi-empirical.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "NASA/CR-2005-213600; Hirsch, D. et al., 'Flammability of Materials in Sub-Atmospheric Enriched Environments'"
+    },
+    "loi_pressure_correction_exp": {
+      "category": "category_2",
+      "value": 0.12,
+      "unit": "dimensionless",
+      "derivation": "Pressure sensitivity coefficient adjusting fuel flammability threshold (LOI(P) = LOI_ref x (P_ref/P)^0.12), reflecting increased flammability at lower total pressure with elevated O2.",
+      "confidence": "HIGH",
+      "status": "derived_from_nasa_standards",
+      "reference": "NASA-STD-6001B Test 1 Flammability Database; Hirsch, D. et al., 'Pressure and Oxygen Effects on Upward Flame Spread', J. ASTM Int. (2010)"
+    },
+    "RAD_LOSS_COEFF_MICROG": {
+      "category": "category_2",
+      "value": 0.28,
+      "unit": "dimensionless",
+      "derivation": "Radiation loss fraction at 1 atm. Scales linearly with pressure (gas-phase emission coefficient proportional to molecular density). At lower pressure, fewer emitting molecules, so less radiative loss, so higher net heat flux to fuel. Verified against Saffire-V S4 (55 kPa, 28% O2) flight data.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "T'ien, J. S. et al., 'Mechanisms of Flame Spread and Smolder in Microgravity', NASA SP-2003-212054; Saffire infrared radiometer package data."
+    },
+    "radiation_loss_1g": {
+      "category": "category_2",
+      "value": 0.15,
+      "unit": "dimensionless",
+      "derivation": "Fraction of heat release emitted as radiation (approx 15%) for small-scale buoyant turbulent/laminar flames under standard Earth gravity.",
+      "confidence": "HIGH",
+      "status": "derived_from_terrestrial_benchmarks",
+      "reference": "SFPE Handbook of Fire Protection Engineering (5th ed.), Chapter 2: Heat Release Rates; Quintiere (2006)"
+    },
+    "char_k_eff_factor": {
+      "category": "category_2",
+      "value": 0.65,
+      "unit": "dimensionless",
+      "derivation": "Effective thermal conductivity ratio (k_char / k_virgin = 0.65) for insulating porous pyrolyzed carbonaceous char layers in thermosets, phenolic, and natural polymers.",
+      "confidence": "HIGH",
+      "status": "derived_from_material_tests",
+      "reference": "Moghtaderi, B. et al., 'Thermal Properties of Charring Materials at Elevated Temperatures', Combust. Sci. Tech. 130 (1997); NASA TP-3540"
+    },
+    "strain_exponent_thin": {
+      "category": "category_2",
+      "value": 0.58,
+      "unit": "dimensionless",
+      "derivation": "Empirical strain damping power-law exponent for thin thermally-thin fuels subject to forced aerodynamic convective flow (u^0.58), reflecting thermal boundary layer thinning. Fit from Saffire thin-fuel cross-flow response curves.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "Olson, S. L., Ferkul, P. V., et al., 'Flame spread: Effects of microgravity and scale', Combustion and Flame, Vol. 199, January 2019, pp. 168-182. DOI: 10.1016/j.combustflame.2018.10.012 - Saffire-I/III thin-fuel cross-flow response curves."
+    },
+    "STRAIN_EXPONENT_THICK": {
+      "category": "category_2",
+      "value": 1.35,
+      "unit": "dimensionless",
+      "derivation": "Aerodynamic strain damping exponent for thermally thick fuels (u^1.35), where both gas-phase flame length and solid-phase conductive heat penetration are aerodynamically attenuated. Fit from Saffire thick-fuel flow sweeps.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_flight_data",
+      "reference": "Saffire-II PMMA slab flow-parameter sweeps; Urban, D. L., et al., 48th ICES Conference (2018) - Saffire-II flow-duct measurements. Value 1.35 is this model's empirical fit, not directly published as a single number."
+    },
+    "l_ph_thick_boundary_factor": {
+      "category": "category_2",
+      "value": 0.63,
+      "unit": "dimensionless",
+      "derivation": "Theoretical ratio of conductive preheat length to hydrodynamic boundary layer thickness (delta_th / delta approx 0.63) derived from classical de Ris thermally-thick flame spread formulation.",
+      "confidence": "HIGH",
+      "status": "derived_from_classical_theory",
+      "reference": "de Ris, J., 'Spread of a Laminar Diffusion Flame', 12th International Symposium on Combustion (1969), pp. 241-252; Sirignano, W. A. (1972)"
+    },
+    "qnet_extinction_threshold": {
+      "category": "category_2",
+      "value": 1.0,
+      "unit": "W/m^2",
+      "derivation": "Minimum net surface heat flux required to sustain pyrolysis. Below 1 W/m^2, energy budget cannot support steady fuel vaporization (radiative quench boundary).",
+      "confidence": "MEDIUM",
+      "status": "physical_threshold",
+      "reference": "Standard pyrolysis energy balance; verify against Saffire post-extinction data."
+    },
+    "uncertainty_fixed_pct_in_range": {
+      "category": "category_2",
+      "value": 0.2,
+      "unit": "fraction",
+      "derivation": "Baseline relative epistemic/aleatoric error bound (20%) applied when ALL inputs fall inside the flight-validated envelope. Conservative placeholder pending real-data MAPE calibration.",
+      "confidence": "MEDIUM",
+      "status": "placeholder_pending_calibration",
+      "reference": "Validation RMSE of Saffire-I through Saffire-IV spread-rate measurements against 1D/2D numerical models (NASA/CR-2020-220491). To be replaced with actual MAPE when holdout data available."
+    },
+    "uncertainty_fixed_pct_out_of_range": {
+      "category": "category_2",
+      "value": 0.4,
+      "unit": "fraction",
+      "derivation": "Elevated relative error bound (40%) applied when ANY input falls outside the flight-validated envelope. Reflects extrapolation uncertainty.",
+      "confidence": "HEURISTIC",
+      "status": "placeholder_pending_calibration",
+      "reference": "Engineering judgment for extrapolation; documented as HEURISTIC not calibrated."
+    },
+    "regression_rate_proxy": {
+      "category": "category_2",
+      "value": 0.02,
+      "unit": "fraction_of_spread_rate",
+      "derivation": "Nominal mass burning regression rate proxy (2% of spread rate) for charring and non-charring polymers under low-flow microgravity. ILLUSTRATIVE - used in transient simulation to keep thickness_remaining from being constant.",
+      "confidence": "MEDIUM",
+      "status": "heuristic_proxy",
+      "reference": "BASS PMMA burning regression observations (order-of-magnitude); exact value pending tighter calibration against Saffire thickness/time data."
+    },
+    "width_correction_reference_mm": {
+      "category": "category_2",
+      "value": 200.0,
+      "unit": "mm",
+      "derivation": "Sample width above which no narrow-width correction is applied: (200 / width)^0.15 for width < 200 mm.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II narrow sample vs Saffire wide sample data."
+    },
+    "width_correction_exponent": {
+      "category": "category_2",
+      "value": 0.15,
+      "unit": "dimensionless",
+      "derivation": "Empirical power-law exponent for narrow sample width correction. Flame spread increases as sample width decreases due to edge heating. Fit to BASS-II narrow sample (50 mm) vs Saffire wide sample (410 mm) flight data. Semi-empirical, pending full 2D formulation.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II narrow sample observations vs Saffire wide sample data."
+    },
+    "rod_geometry_factor": {
+      "category": "category_2",
+      "value": 1.85,
+      "unit": "dimensionless",
+      "derivation": "Cylindrical curvature heat-focus multiplier (1.85x) paired with 1.18x radial diffusive O2 entrainment (effective combined ~2.18x), preventing double-counting on BASS-II PMMA rod experiments.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II PMMA rod flight observations."
+    },
+    "low_flow_thin_fuel_threshold_cms": {
+      "category": "category_2",
+      "value": 5.0,
+      "unit": "cm/s",
+      "derivation": "Flow below which thin-fuel spread gets the enhancement boost (5 / flow)^0.15.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II low-flow thin fuel observations."
+    },
+    "low_flow_thin_fuel_exponent": {
+      "category": "category_2",
+      "value": 0.15,
+      "unit": "dimensionless",
+      "derivation": "Empirical power-law exponent for low-flow enhancement of thin fuel spread. Below 5 cm/s, boundary layer thickens and radiative preheating increases relative to forced convection, accelerating spread. Fit to BASS-II B1 (3 cm/s) data.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II low-flow observations."
+    },
+    "near_loi_margin_threshold": {
+      "category": "category_2",
+      "value": 0.15,
+      "unit": "dimensionless",
+      "derivation": "Relative O2 margin above effective LOI below which flame spread is ramped down. Heuristic.",
+      "confidence": "HEURISTIC",
+      "status": "semi_empirical_fit",
+      "reference": "Calibrated against Saffire-IV S2 (26% O2) only; no published source."
+    },
+    "near_loi_exponent": {
+      "category": "category_2",
+      "value": 1.5,
+      "unit": "dimensionless",
+      "derivation": "Exponent of the near-LOI slowdown: factor = (margin / 0.15)^1.5.",
+      "confidence": "HEURISTIC",
+      "status": "semi_empirical_fit",
+      "reference": "Calibrated against Saffire-IV S2 only; no published source."
+    },
+    "near_loi_floor": {
+      "category": "category_3",
+      "value": 0.1,
+      "unit": "dimensionless",
+      "derivation": "Minimum multiplier of the near-LOI slowdown, so spread never drops below 10% of the unscaled value.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Engineering guard."
+    },
+    "min_regression_rate_floor": {
+      "category": "category_3",
+      "value": 0.005,
+      "unit": "mm/s",
+      "derivation": "Numerical and physical non-zero floor to prevent singularity in burn-duration calculation near flame extinction boundaries.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Computational stability limit, fire_model.py implementation"
+    },
+    "THIN_FUEL_THRESHOLD_M": {
+      "category": "category_2",
+      "value": 0.001,
+      "unit": "m",
+      "derivation": "Biot number boundary criterion dividing thermally-thin (Bi < 0.1, d <= 1.0 mm) and thermally-thick (Bi > 1.0, d > 1.0 mm) solid fuel regimes for cellulose and PMMA.",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "engineering_standard",
+      "reference": "Drysdale, D., An Introduction to Fire Dynamics (3rd ed.), Wiley; Fernandez-Pello (1995)"
+    },
+    "MIN_FLOW_FLOOR": {
+      "category": "category_3",
+      "value": 0.001,
+      "unit": "m/s",
+      "derivation": "Safety floor in V_forced = max(flow/100, 0.001) - prevents divide-by-zero in aerodynamic strain calculations.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Code: backend/fire_model.py"
+    },
+    "MIN_PRESSURE_RATIO_FLOOR": {
+      "category": "category_3",
+      "value": 0.05,
+      "unit": "dimensionless",
+      "derivation": "Floor in p_ratio = max(pressure / P_ref, 0.05) - prevents unrealistic exponential blowup at near-vacuum conditions.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Code: backend/fire_model.py"
+    },
+    "MIN_DT_PYRO_FLOOR": {
+      "category": "category_3",
+      "value": 50.0,
+      "unit": "K",
+      "derivation": "Floor in dT_pyro = max(T_pyro - T_inf, 50.0) - prevents divide-by-zero for materials with near-ambient pyrolysis temperature.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Code: backend/fire_model.py"
+    },
+    "MIN_DELTA_F_FLOOR": {
+      "category": "category_3",
+      "value": 0.0001,
+      "unit": "m",
+      "derivation": "Floor in max(delta_f, 1e-4) - prevents divide-by-zero in convective heat flux when boundary layer is ultra-thin.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Code: backend/fire_model.py"
+    },
+    "MIN_NU_G_FLOOR": {
+      "category": "category_3",
+      "value": 0.1,
+      "unit": "dimensionless",
+      "derivation": "Floor in max(p_ratio, 0.1) when computing kinematic viscosity - prevents unphysical viscosity blowup at near-vacuum.",
+      "confidence": "NUMERICAL_GUARD",
+      "status": "numerical_floor",
+      "reference": "Code: backend/fire_model.py"
+    },
+    "DEFAULT_LOI_VALUE": {
+      "category": "category_3",
+      "value": 18.0,
+      "unit": "%",
+      "derivation": "Fallback LOI applied when a material is missing the LOI field in the materials database. Typical for commodity polymers.",
+      "confidence": "HEURISTIC",
+      "status": "default_value",
+      "reference": "Code: backend/fire_model.py mat.get('LOI', 18.0)"
+    },
+    "MIN_CHUNK_LEN_RAG": {
+      "category": "category_3",
+      "value": 100,
+      "unit": "characters",
+      "derivation": "Minimum semantic character threshold below which segmented document fragments lack sufficient context for dense vector embedding.",
+      "confidence": "HEURISTIC",
+      "status": "design_choice",
+      "reference": "LangChain / LlamaIndex ingestion best practices"
+    },
+    "CHUNK_SIZE_RAG": {
+      "category": "category_3",
+      "value": 500,
+      "unit": "characters",
+      "derivation": "Chunk size targeting aerospace material datasheet sections and combustion paper paragraphs without truncating context.",
+      "confidence": "HEURISTIC",
+      "status": "design_choice",
+      "reference": "Embedding model context calibration (all-MiniLM-L6-v2)"
+    },
+    "CHUNK_OVERLAP_RAG": {
+      "category": "category_3",
+      "value": 100,
+      "unit": "characters",
+      "derivation": "Standard approx 20% chunk-boundary overlap window to preserve cross-sentence semantic continuity for technical equations and citations.",
+      "confidence": "HEURISTIC",
+      "status": "design_choice",
+      "reference": "Lewis, P. et al., 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks', NeurIPS (2020)"
+    },
+    "physics_ai_sanity_threshold": {
+      "category": "category_3",
+      "value": 0.3,
+      "unit": "fraction",
+      "derivation": "Guardrail tolerance (30% relative discrepancy): if surrogate output deviates by >30% from first-principles physics, surrogate is flagged as out-of-distribution and system falls back to physics engine.",
+      "confidence": "HEURISTIC",
+      "status": "engineering_guard",
+      "reference": "Code: backend/main.py pipeline safety architecture"
+    },
+    "PENALTY_MATERIAL_NOT_VALIDATED": {
+      "category": "category_4",
+      "value": -40.0,
+      "unit": "applicability_score_points",
+      "derivation": "Heavy deduction when material is not in the Saffire/BASS flight-validated list (CORE_NASA_NAMES). Physics extrapolates to unvalidated materials, carrying higher uncertainty.",
+      "confidence": "HEURISTIC",
+      "status": "expert_rule",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "PENALTY_GRAVITY_OUT_OF_RANGE": {
+      "category": "category_4",
+      "value": -20.0,
+      "unit": "applicability_score_points",
+      "derivation": "Applied when gravity level is outside validated range [0, 1] g. Values above 1g or below 0g are extrapolations beyond flight data.",
+      "confidence": "HEURISTIC",
+      "status": "expert_rule",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "PENALTY_O2_OUT_OF_RANGE": {
+      "category": "category_4",
+      "value": -15.0,
+      "unit": "applicability_score_points",
+      "derivation": "Applied when ambient oxygen falls outside validated range [12%, 30%] - the NASA-STD-6001B spacecraft cabin flammability-test bounds.",
+      "confidence": "HEURISTIC",
+      "status": "expert_rule",
+      "reference": "NASA-STD-6001B; Code: backend/fire_model.py > applicability()"
+    },
+    "PENALTY_FLOW_OUT_OF_RANGE": {
+      "category": "category_4",
+      "value": -15.0,
+      "unit": "applicability_score_points",
+      "derivation": "Applied when forced flow falls outside validated range [0.5, 30] cm/s - the Saffire ventilation regime.",
+      "confidence": "HEURISTIC",
+      "status": "expert_rule",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "PENALTY_THICKNESS_OUT_OF_RANGE": {
+      "category": "category_4",
+      "value": -10.0,
+      "unit": "applicability_score_points",
+      "derivation": "Applied when fuel thickness is outside validated range [0.1, 15] mm - covers SIBAL fabric through thick PMMA slabs.",
+      "confidence": "HEURISTIC",
+      "status": "expert_rule",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "SCORE_THRESHOLD_HIGH_CONFIDENCE": {
+      "category": "category_4",
+      "value": 90.0,
+      "unit": "applicability_score_points",
+      "derivation": "Minimum score for HIGH applicability categorization - prediction lies within flight-validated envelope.",
+      "confidence": "HEURISTIC",
+      "status": "heuristic_classification_boundary",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "SCORE_THRESHOLD_MODERATE_CONFIDENCE": {
+      "category": "category_4",
+      "value": 60.0,
+      "unit": "applicability_score_points",
+      "derivation": "Minimum score for MODERATE applicability; scores below this flag predictions as LOW / out-of-distribution.",
+      "confidence": "HEURISTIC",
+      "status": "heuristic_classification_boundary",
+      "reference": "Code: backend/fire_model.py > applicability()"
+    },
+    "STEFAN_BOLTZMANN": {
+      "category": "category_1",
+      "value": 5.670374419e-08,
+      "unit": "W/(m^2*K^4)",
+      "derivation": "Exact CODATA 2018 Stefan-Boltzmann constant for solid surface radiative heat loss q_surf = epsilon * sigma * (T_pyro^4 - T_inf^4).",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "universal_constant",
+      "reference": "CODATA 2018; Bhattacharjee et al. (1996), ASME J. Heat Transfer 118(1), 181-190"
+    },
+    "surface_emissivity_default": {
+      "category": "category_2",
+      "value": 0.85,
+      "unit": "dimensionless",
+      "derivation": "Fallback hemispherical infrared surface emissivity when material-specific emissivity is not specified; category-specific values (0.35-0.95) defined in backend/materials.py.",
+      "confidence": "HIGH",
+      "status": "derived_from_literature",
+      "reference": "Incropera & DeWitt (2007), Fundamentals of Heat and Mass Transfer, Table A.11"
+    },
+    "soot_radiative_feedback_coeff": {
+      "category": "category_2",
+      "value": 0.55,
+      "unit": "dimensionless",
+      "derivation": "Luminous flame soot radiative feedback augmentation factor at elevated oxygen mole fractions (X_O2 > 0.21).",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "Quintiere, J. G. (2006), Fundamentals of Fire Phenomena, Ch. 10"
+    },
+    "quasi2d_lateral_o2_entrainment_coeff": {
+      "category": "category_2",
+      "value": 0.35,
+      "unit": "dimensionless",
+      "derivation": "Lateral diffusive oxygen enrichment scaling factor (1 + 0.35 * min(delta_f / W, 0.6)) for finite-width sheets with free edges.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "Olson, Ferkul & T'ien (1988), 22nd Symp. Combust.; BASS-II narrow-sample edge-diffusion observations"
+    },
+    "quasi2d_clamped_edge_conduction_factor": {
+      "category": "category_2",
+      "value": 4.0,
+      "unit": "dimensionless",
+      "derivation": "Characteristic lateral conductive heat sink coefficient (4 * k_s * tau * dT_pyro / W^2) modeling quenching width behavior in conductive metal sample holders.",
+      "confidence": "HIGH",
+      "status": "derived_from_classical_theory",
+      "reference": "Quintiere, J. G. (2006), Fundamentals of Fire Phenomena, Ch. 7 (Critical quenching width)"
+    },
+    "thin_thick_smoothstep_bounds_m": {
+      "category": "category_3",
+      "value": [
+        0.0005,
+        0.002
+      ],
+      "unit": "m",
+      "derivation": "C1-continuous cubic Hermite transition interval [0.5 mm, 2.0 mm] around nominal 1.0 mm thermal thickness boundary to eliminate unphysical step discontinuities.",
+      "confidence": "PHYSICALLY_MOTIVATED",
+      "status": "numerical_regularization",
+      "reference": "Quintiere, J. G. (2006), Ch. 7"
+    },
+    "sphere_geometry_factor": {
+      "category": "category_2",
+      "value": 1.85,
+      "unit": "dimensionless",
+      "derivation": "3D spherical curvature heat-focus multiplier for spherical PMMA fuel specimens tested in BASS-II microgravity experiments.",
+      "confidence": "MEDIUM",
+      "status": "semi_empirical_fit",
+      "reference": "BASS-II PMMA sphere microgravity flame spread dataset"
+    },
+    "pde_2d_fourier_cfl_limit": {
+      "category": "category_3",
+      "value": 0.2,
+      "unit": "dimensionless",
+      "derivation": "Explicit 2D Von Neumann / Fourier stability criterion Fo = alpha_s * sub_dt / min(dx^2, dy^2) <= 0.20 governing automatic sub-stepping in simulate_2d().",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "numerical_stability_guard",
+      "reference": "Patankar, S. V. (1980), Numerical Heat Transfer and Fluid Flow"
+    },
+    "FLOW_STRAIN_CRITICAL_THIN_CMS": {
+      "category": "category_2",
+      "value": 30.0,
+      "unit": "cm/s",
+      "derivation": "Aerodynamic strain onset threshold for thermally thin fabrics in microgravity (30 cm/s), calibrated to Saffire-I/III 20-25 cm/s flow-sweep data.",
+      "confidence": "HIGH",
+      "status": "derived_from_flight_data",
+      "reference": "Olson, S. L., Ferkul, P. V., et al. (2019), Combustion and Flame, 199, 168-182"
+    },
+    "ROD_CURVATURE_BASE": {
+      "category": "category_2",
+      "value": 1.42,
+      "unit": "dimensionless",
+      "derivation": "Cylindrical speed-up at delta_f/D -> 0. Fitted to BASS-II B5 (6.35 mm) and B9 (9.5 mm); 2 parameters on 2 points, zero degrees of freedom.",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "BASS-II rod runs (calibration_data_1d.csv)"
+    },
+    "ROD_CURVATURE_SLOPE": {
+      "category": "category_2",
+      "value": 0.35,
+      "unit": "dimensionless",
+      "derivation": "Growth of rod speed-up with delta_f/D (capped at ROD_CURVATURE_RATIO_MAX=1.5). Fitted jointly with ROD_CURVATURE_BASE.",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "BASS-II rod runs (calibration_data_1d.csv)"
+    },
+    "LOW_P_RAD_FEEDBACK_EXP": {
+      "category": "category_2",
+      "value": 0.45,
+      "unit": "dimensionless",
+      "derivation": "Sub-atmospheric multiplier (P_ref/P)^n on flame radiative feedback. Chosen from S4 (55 kPa, 28% O2) alone; single-point calibration, not derived from Bhattacharjee et al. 1996.",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "Saffire-V S4 (Ruff et al. 2021)"
+    },
+    "THERMAL_DEPTH_COEFF": {
+      "category": "category_2",
+      "value": 3000.0,
+      "unit": "dimensionless",
+      "derivation": "Empirical solid thermal depth delta_th = C*alpha_s*V_eff^-0.25 (V_eff in m/s). Dimensionally ad hoc; chosen so SIBAL/Nomex stay thin while 0.8 mm PMMA trends thick.",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "Empirical; MIST_04, Saffire-IV S2, SIBAL points"
+    },
+    "THERMAL_DEPTH_V_EXP": {
+      "category": "category_2",
+      "value": 0.25,
+      "unit": "dimensionless",
+      "derivation": "Velocity exponent in empirical thermal depth.",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "Empirical"
+    },
+    "THIN_THICK_RATIO_LO": {
+      "category": "category_2",
+      "value": 0.85,
+      "unit": "dimensionless",
+      "derivation": "tau/delta_th below which fuel is fully thin (was 0.75).",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "Empirical; sensitive (see note)"
+    },
+    "THIN_THICK_RATIO_HI": {
+      "category": "category_2",
+      "value": 1.6,
+      "unit": "dimensionless",
+      "derivation": "tau/delta_th above which fuel is fully thick (was 1.80). Results for 0.8 mm PMMA are knife-edge sensitive to these edges (1.7% to 172% error for +-0.05 shifts).",
+      "confidence": "LOW",
+      "status": "empirical_fit",
+      "reference": "Empirical; sensitive (see note)"
+    },
+    "NASA_SMAC_CO_1H_PPM": {
+      "category": "category_2",
+      "value": 55.0,
+      "unit": "ppm",
+      "derivation": "NASA 1-hour Spacecraft Maximum Allowable Concentration (SMAC) for Carbon Monoxide in habitable spacecraft modules.",
+      "confidence": "HIGH",
+      "status": "derived_from_nasa_standards",
+      "reference": "NASA JSC 20584, Spacecraft Maximum Allowable Concentrations for Airborne Contaminants"
+    },
+    "NASA_SMAC_HCN_1H_PPM": {
+      "category": "category_2",
+      "value": 4.5,
+      "unit": "ppm",
+      "derivation": "NASA 1-hour SMAC ceiling for Hydrogen Cyanide (mitochondrial cytochrome c oxidase inhibitor).",
+      "confidence": "HIGH",
+      "status": "derived_from_nasa_standards",
+      "reference": "NASA JSC 20584, Spacecraft Maximum Allowable Concentrations for Airborne Contaminants"
+    },
+    "MICROG_INCOMPLETE_COMBUSTION_MULTIPLIER": {
+      "category": "category_2",
+      "value": 2.1,
+      "unit": "dimensionless",
+      "derivation": "Enhancement factor for CO and soot yields under buoyancy-free microgravity diffusion burning due to oxygen starvation.",
+      "confidence": "MEDIUM",
+      "status": "derived_from_literature",
+      "reference": "T'ien et al. (2003), NASA SP-2003-212054; Olson et al. (2019), Combust. Flame 199"
+    },
+    "PBA_O2_COHB_WASHOUT_HALF_LIFE_MIN": {
+      "category": "category_1",
+      "value": 74.0,
+      "unit": "minutes",
+      "derivation": "Elimination half-life of Carboxyhemoglobin (COHb) under 100% normobaric oxygen therapy (Portable Breathing Apparatus), vs ~320 min on room air.",
+      "confidence": "PHYSICAL_STANDARD",
+      "status": "clinical_standard",
+      "reference": "Weaver, L. K. (2009), Carbon Monoxide Poisoning, New England Journal of Medicine, 360(12), 1217-1225"
+    }
+  }
+}

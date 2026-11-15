@@ -1,0 +1,13 @@
+{
+  "captions": [
+    {"start": 0.5, "text": "In 2016, NASA lit a fire inside a spacecraft, on purpose."},
+    {"start": 4.8, "text": "They needed to know how fire behaves without gravity."},
+    {"start": 9.5, "text": "On Earth, hot gas rises, and flames stretch upward."},
+    {"start": 14.2, "text": "Remove gravity — no up, no down, no rise."},
+    {"start": 19.0, "text": "The flame becomes a slow blue sphere, starved of fresh oxygen."},
+    {"start": 24.5, "text": "Saffire One measured this behavior on the International Space Station."},
+    {"start": 30.0, "text": "Our physics model is validated against that flight data."},
+    {"start": 35.5, "text": "Cut the oxygen, and the flame dies."},
+    {"start": 40.0, "text": "In space, fire is a different animal. Now it is your turn."}
+  ]
+}
