@@ -10,4 +10,4 @@ venv/
 README.md
 .notebooks/
 .pytest_cache/
-*.md
+*.mdai/papers/

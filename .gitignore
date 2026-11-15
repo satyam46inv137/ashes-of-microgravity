@@ -47,4 +47,4 @@ ai/models/*.pkl
 .cache/
 
 # Vercel
-.vercel/
+.vercel/ai/papers/
