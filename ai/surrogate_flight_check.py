@@ -1,31 +1,9 @@
-"""
-Direct check of the trained neural surrogate on the flight calibration runs.
-
-For every run in ai/calibration_data_1d.csv this prints, side by side:
-    flight actual | physics engine | surrogate (mean +/- std of the 5 members)
-and summarises three errors:
-    1. physics   vs flight   (in-sample: the physics constants were tuned on these runs)
-    2. surrogate vs flight   (does the emulator inherit / add error at flight conditions?)
-    3. surrogate vs physics  (emulator fidelity; this is what the 30% OOD flag monitors)
-
-WHAT THIS DOES *NOT* SHOW
--------------------------
-The flight runs are the calibration data of the physics engine, and the surrogate is trained
-to reproduce the physics engine. So this is NOT an out-of-sample validation of either model.
-It tells you how faithfully the emulator reproduces the physics (and flight data) at the
-conditions that matter most. For an honest out-of-sample number for the physics see
-ai/nested_loo.py. (The surrogate was not re-trained per fold, so it has no nested estimate.)
-
-Run from the repo root (needs the trained weights in ai/models/ and torch installed):
-    python -m ai.surrogate_flight_check
-    python -m ai.surrogate_flight_check --include-excluded --out ai/surrogate_flight_check.json
-"""
 import argparse
 import json
 
 import numpy as np
 
-from ai.nested_loo import FUEL_ALIASES, fm, load_materials, load_rows  # noqa: F401  (shared CSV loader)
+from ai.nested_loo import FUEL_ALIASES, fm, load_materials, load_rows
 
 DEFAULTS = dict(g_level=0.0, pressure_kPa=101.3, oxygen_pct=21.0, flow_vel_cms=20.0,
                 thickness_mm=10.0, configuration="Opposed", sample_width_mm=410.0,
@@ -52,7 +30,7 @@ def main():
     ap.add_argument("--out", default="ai/surrogate_flight_check.json")
     args = ap.parse_args()
 
-    from ai.surrogate import EnsembleSurrogate  # imported here so --help works without torch
+    from ai.surrogate import EnsembleSurrogate
 
     materials = load_materials()
     physics = fm.FireModel(materials)
