@@ -5,7 +5,7 @@ echo   Ashes of Microgravity - Combustion Lab
 echo ============================================
 echo.
 
-REM Load .env if present
+REM
 if exist .env (
     for /f "usebackq tokens=1,* delims==" %%a in (".env") do (
         if not "%%a"=="" if not "%%b"=="" set "%%a=%%~b"
@@ -18,7 +18,7 @@ if "%GROQ_API_KEY%"=="" (
     echo.
 )
 
-REM Prefer local venv, fallback to system python / py launcher
+REM
 set "PY_CMD=python"
 if exist ".venv\Scripts\python.exe" set "PY_CMD=.venv\Scripts\python.exe"
 

@@ -1,14 +1,3 @@
-"""
-Comprehensive Unit & Physics-Verification Test Suite for FireModel.
-Covers:
-  1. NASA Saffire-I S2 flight telemetry parity (1.343 mm/s, 0.165 concurrent ratio)
-  2. Physical extinction boundaries (LOI, quiescent microgravity quench, pressure-scaled blow-off)
-  3. Smooth C1 thin-to-thick thermal blending (continuity across 1.0 mm)
-  4. Quasi-2D edge effects (free-edge oxygen entrainment acceleration vs clamped-edge conductive quenching)
-  5. Full 2D transient PDE solver (simulate_2d: line/point ignition, parabolic vs concave fronts)
-  6. API contracts, sensitivity ranking, and energy-conserving transient burn-through
-"""
-
 import pytest
 try:
     from backend.fire_model import FireModel
@@ -19,7 +8,6 @@ except ModuleNotFoundError:
 
 MAT = "SIBAL Standard Fabric"
 
-# Saffire-I S2 flight condition (opposed, 0g, 21% O2, 20 cm/s, 0.33 mm)
 S2 = dict(
     g_level=0.0, pressure_kPa=101.3, oxygen_pct=21.0,
     flow_vel_cms=20.0, thickness_mm=0.33, configuration="Opposed",
@@ -35,7 +23,6 @@ def run(model, **over):
     return model.predict(MAT, **{**S2, **over})
 
 
-# ---------- 1. Flight Parity ----------
 
 def test_saffire_s2_parity(model):
     assert run(model)["flame_spread_mms"] == pytest.approx(1.343, rel=0.03)
@@ -46,8 +33,6 @@ def test_concurrent_to_opposed_ratio_is_0165(model):
     con = run(model, configuration="Concurrent")["flame_spread_mms"]
     assert con / opp == pytest.approx(0.165, rel=0.02)
 
-
-# ---------- 2. Extinction Criteria ----------
 
 def test_below_loi_is_extinct(model):
     r = run(model, oxygen_pct=5.0)
@@ -69,13 +54,10 @@ def test_blowoff_at_high_flow(model):
 
 
 def test_blowoff_limit_scales_with_pressure(model):
-    # limit = 50 * sqrt(p_ratio): 40 cm/s ok at 1 atm, too fast at 55 kPa
     assert not run(model, flow_vel_cms=40.0, pressure_kPa=101.3)["is_extinct"]
     low_p = run(model, flow_vel_cms=40.0, pressure_kPa=55.0)
     assert low_p["is_extinct"] and "Blow-off" in low_p["extinction_reason"]
 
-
-# ---------- 3. Physical Sanity & Smooth Transition ----------
 
 @pytest.mark.parametrize("o2", [15, 18, 21, 30])
 @pytest.mark.parametrize("flow", [0.3, 1, 5, 20, 40, 100])
@@ -99,7 +81,6 @@ def test_deterministic(model):
 
 
 def test_smooth_thin_to_thick_transition(model):
-    # No abrupt step jump across 1.0 mm boundary (smooth thermal penetration blending)
     s_099 = run(model, thickness_mm=0.99)["flame_spread_mms"]
     s_101 = run(model, thickness_mm=1.01)["flame_spread_mms"]
     assert abs(s_099 - s_101) / s_099 < 0.10
@@ -110,8 +91,6 @@ def test_stefan_boltzmann_surface_loss_reported(model):
     assert r["q_surf_loss_kWm2"] > 0.0
     assert r["q_net_kWm2"] == pytest.approx(r["q_conv_kWm2"] - r["q_rad_kWm2"], abs=0.05)
 
-
-# ---------- 4. Quasi-2D & Full 2D Physics ----------
 
 def test_rod_and_sphere_geometries_faster_than_plate(model):
     plate = run(model, geometry="plate")["flame_spread_mms"]
@@ -138,7 +117,6 @@ def test_simulate_2d_line_and_point_ignition(model):
     assert sim_free["status"] == "COMPLETED"
     assert len(sim_free["snapshots"]) >= 2
     assert sim_free["final_burned_area_pct"] > 0.0
-    # Free edges lead or match centerline
     contour_free = sim_free["snapshots"][-1]["front_contour_mm"]
     assert contour_free[0] >= contour_free[len(contour_free) // 2]
 
@@ -148,7 +126,6 @@ def test_simulate_2d_line_and_point_ignition(model):
         thickness_mm=0.33, flow_vel_cms=20.0,
     )
     contour_clamped = sim_clamped["snapshots"][-1]["front_contour_mm"]
-    # Clamped edges lag behind centerline (parabolic front)
     assert contour_clamped[0] < contour_clamped[len(contour_clamped) // 2]
 
     sim_point = model.simulate_2d(
@@ -159,8 +136,6 @@ def test_simulate_2d_line_and_point_ignition(model):
     assert sim_point["status"] == "COMPLETED"
     assert sim_point["final_burned_area_pct"] > 0.0
 
-
-# ---------- 5. API Contract & Transient ----------
 
 def test_unknown_kwarg_raises(model):
     with pytest.raises(TypeError):

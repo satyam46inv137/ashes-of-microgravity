@@ -12,20 +12,13 @@ sentence-transformers>=2.6
 pymupdf>=1.24
 pypdf>=4.0
 
-# NOTE: torch is installed separately (CPU-only): see Dockerfile and .github/workflows/ci.yml
-#   pip install torch --index-url https://download.pytorch.org/whl/cpu
-
-# Validation (ai/nested_loo.py, ai/surrogate_flight_check.py)
+# Validation
 scipy>=1.11
 pandas>=2.1
 scikit-learn>=1.4
 joblib>=1.3
 tqdm>=4.66
 
-# Tests (httpx is required by fastapi.testclient)
+# Tests
 pytest>=8.0
 httpx>=0.25
-
-# For fully reproducible installs: after the tests pass in a clean virtualenv run
-#   pip freeze > requirements-lock.txt
-# and install from the lock file in Docker/CI (keep this file as the loose, human-edited spec).

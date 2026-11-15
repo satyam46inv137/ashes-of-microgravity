@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/NASA_SPACE_APPS_2026-FLAME_IN_FREEFALL-0B3D91?style=for-the-badge&logo=nasa&logoColor=white" alt="NASA Space Apps 2026" />
+<img src="https://img.shields.io/badge/NASA_SPACE_APPS_2026-FLAME_IN_FREEFALL-0B3D91?style=for-the-badge" alt="NASA Space Apps 2026" />
 <img src="https://img.shields.io/badge/NESTED_LOO_MAPE-10--12%25_(3_seeds)-3B82F6?style=for-the-badge" alt="Nested LOO MAPE 10-12%" />
 <img src="https://img.shields.io/badge/FLIGHT_RUNS-13_(SAFFIRE_I--V_%2B_BASS--II)-10B981?style=for-the-badge" alt="13 flight runs" />
 <img src="https://img.shields.io/badge/TOXICOLOGY_BASIS-NASA_JSC_20584_%7C_ISO_13571-EF4444?style=for-the-badge" alt="Toxicology basis" />
@@ -17,6 +17,10 @@
 [Repository](https://github.com/satyam46inv137/ashes-of-microgravity) · [Interactive API (`/docs`)](#api-reference-backendmainpy-v210) · [Constants Audit (`constants_provenance.json`)](ai/constants_provenance.json) · [Attribution (`NOTICE`)](NOTICE)
 
 </div>
+
+---
+
+> **Live deployment modes.** The Render-hosted demo runs in **lite mode** — full physics engine, 2D PDE solver, and crew toxicology model. The 41-feature AI surrogate and RAG index require the full Docker build (Cloud Run / local `docker-compose`), as Render's 512MB free tier cannot fit PyTorch + ChromaDB. Physics remains authoritative in both modes. `/health` reports `deployment_mode`.
 
 ---
 
@@ -195,7 +199,7 @@ Several fold-mean values (seed 0) differ clearly from the hand-tuned defaults: `
 
 *Uncertainty semantics: `flame_spread_uncertainty_mms` is a first-order Taylor propagation of input measurement tolerances (±1.5% O₂, ±5% flow, ±2% thickness, ±1% pressure) plus an applicability-scaled epistemic term (18% inside the envelope, up to 43% outside). That epistemic term is a heuristic, not a statistically calibrated quantity. The surrogate's `ensemble_disagreement` is the standard deviation across 5 models, an epistemic proxy rather than a calibrated 95% CI. Neither includes systematic physics error.*
 
-### Constant Provenance (aligned with `NASA-STD-7009A` practice)
+### Constant Provenance (inspired by `NASA-STD-7009A`)
 
 Every coefficient is logged in [`ai/constants_provenance.json`](ai/constants_provenance.json) with its derivation, confidence tier, and literature citation. For example, `F_CONCURRENT_THIN_MICROG = 0.165` comes from the ratio of Saffire-I concurrent (`0.224 mm/s`) to opposed (`1.343 mm/s`) spread over identical SIBAL fabric under `20 cm/s` flow (`0.224 / 1.343 = 0.1668`). This project follows the *spirit* of `NASA-STD-7009A` (documented provenance, applicability and uncertainty reporting) but makes no claim of compliance with it.
 
@@ -444,5 +448,7 @@ Built for **NASA International Space Apps Challenge 2026 - *Flame in Freefall***
 
 * **Satyam Sharma** *(B.Tech CSE - Data Science)*: Combustion physics modeling, 2D thermal-pyrolysis PDE solver, 41-feature PyTorch ensemble, FastAPI architecture, and frontend engineering.
 * **Shivam Sharma** *(MBBS - Clinical Medicine)*: Spacecraft crew toxicology modeling, NASA JSC 20584 SMAC integration, ISO 13571 Purser FED & CFK carboxyhemoglobin kinetics, and clinical triage protocols.
+
+*Roles describe each member's responsibility for scope, modelling decisions and review; implementation was carried out with SI assistance (see above).*
 
 This project is not affiliated with or endorsed by NASA. Licensed under the **Apache License 2.0** - see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE) for attribution terms.

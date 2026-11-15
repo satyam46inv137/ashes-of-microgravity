@@ -473,6 +473,7 @@ class HealthResponse(BaseModel):
     surrogate_loaded: bool
     rag_loaded: bool
     rag_chunks: int
+    deployment_mode: Optional[str] = None
 
 
 # ==============================================================================
@@ -788,19 +789,23 @@ def metadata():
 @app.get("/health", response_model=HealthResponse, tags=["System"], summary="API and subsystem health status")
 def health():
     physics_ok = fire_model is not None and len(MAT_DICT) > 0
+    # Do NOT trigger lazy loads here — health probes must stay cheap.
     surrogate_ok = _surrogate is not None and _surrogate is not False
     rag_ok = _kb is not None and _kb is not False
     rag_chunks = _kb.collection.count() if rag_ok else 0
+    deployment_mode = "full" if (surrogate_ok and rag_ok) else "lite"
     return {
-        "status": "ok" if physics_ok else "degraded",   # ← physics-hi decides
+        # Physics is the authoritative core. If it loads, the service is operational.
+        # Surrogate + RAG are optional accelerators unavailable on 512MB serverless tiers.
+        "status": "ok" if physics_ok else "degraded",
         "version": "2.1.0",
         "physics_loaded": physics_ok,
         "materials_loaded": len(MATERIALS_118),
-        "surrogate_loaded": surrogate_ok,   # false until first /predict
-        "rag_loaded": rag_ok,                # false until first /rag
+        "surrogate_loaded": surrogate_ok,
+        "rag_loaded": rag_ok,
         "rag_chunks": rag_chunks,
+        "deployment_mode": deployment_mode,
     }
-
 
 
 FRONTEND_DIR = PROJECT_ROOT / "frontend"

@@ -34,7 +34,6 @@ body{margin:0;background:var(--bg);color:var(--tx);font-family:'Plus Jakarta San
 .mono,select,button,input{font-family:'JetBrains Mono',monospace}
 #pg{position:fixed;top:0;left:0;height:3px;width:0;z-index:95;background:linear-gradient(90deg,var(--amb),var(--blu),var(--ok))}
 
-/* ========== FLOATING NAV ========== */
 nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:70;display:flex;gap:6px;align-items:center;padding:7px 14px;border:1px solid var(--bd);border-radius:999px;background:rgba(10,16,30,.88);backdrop-filter:blur(18px);box-shadow:0 12px 36px rgba(0,0,0,.5);white-space:nowrap}
 nav b{font-weight:800;margin-right:8px;font-size:14px;color:var(--tx);letter-spacing:-.01em}
 nav a{color:var(--tx-soft);text-decoration:none;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px;transition:.2s}
@@ -45,13 +44,11 @@ nav .st.on i{background:var(--ok);box-shadow:0 0 10px var(--ok)}
 nav .st.off i{background:var(--bad)}
 @media(max-width:860px){nav a{display:none}}
 
-/* ========== SECTION HEADERS ========== */
 .wrap{max-width:1360px;margin:0 auto;padding:88px 5vw 64px}
 .step-tag{display:inline-flex;align-items:center;gap:8px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--blu);background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);padding:5px 12px;border-radius:999px;margin-bottom:12px}
 .sec-title{font-size:clamp(1.75rem,3.6vw,2.75rem);font-weight:800;letter-spacing:-.03em;margin:0 0 10px;line-height:1.12}
 .sec-lead{color:var(--tx-soft);font-size:16px;max-width:760px;margin:0 0 28px;line-height:1.65}
 
-/* ========== HERO & ANIMATED STORY STAGE ========== */
 .hero{min-height:190vh;position:relative}
 .hs{position:sticky;top:0;height:100vh;overflow:hidden;background:radial-gradient(circle at 68% 48%,#0E1E38 0%,#060A14 70%);display:flex;align-items:center}
 .hs canvas#hg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
@@ -77,7 +74,6 @@ nav .st.off i{background:var(--bad)}
 .grav-badge span{display:block;font:600 10px 'JetBrains Mono',monospace;color:var(--mu);text-transform:uppercase;letter-spacing:.1em}
 .grav-badge b{font:700 28px 'JetBrains Mono',monospace;color:var(--amb);line-height:1.1}
 
-/* Animated Story Theater Overlay */
 .story-theater{position:fixed;inset:0;z-index:85;background:rgba(4,7,15,.94);backdrop-filter:blur(20px);display:none;flex-direction:column;justify-content:center;align-items:center;padding:24px}
 .story-theater.open{display:flex}
 .theater-card{width:min(1040px,95vw);border:1px solid rgba(56,189,248,.3);border-radius:24px;background:#0A1120;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.75)}
@@ -95,14 +91,12 @@ nav .st.off i{background:var(--bad)}
 .theater-dots i{flex:1;height:4px;border-radius:4px;background:#1E293B;transition:.3s}
 .theater-dots i.act{background:var(--amb)}
 
-/* ========== MISSION PRESET BAR ========== */
 .presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
 .presets label{font:600 11px 'JetBrains Mono',monospace;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-right:4px}
 .pp{padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--surface);color:var(--tx-soft);font:600 11.5px 'JetBrains Mono',monospace;cursor:pointer;transition:.2s}
 .pp:hover{border-color:var(--blu);color:var(--tx)}
 .pp.act{background:rgba(56,189,248,.16);border-color:var(--blu);color:#7DD3FC}
 
-/* ========== LAB LAYOUT ========== */
 .lab-layout{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start}
 @media(max-width:1024px){.lab-layout{grid-template-columns:1fr}}
 .panel{padding:22px;border:1px solid var(--bd);border-radius:20px;background:var(--card)}
@@ -131,7 +125,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .seg button{border:0;border-radius:8px;padding:7px 4px;background:none;color:var(--mu);font-size:10.5px;font-weight:600;cursor:pointer}
 .seg .on{background:var(--amb);color:#140D02;font-weight:700}
 
-/* Plain-Language Verdict + KPI Grid */
 .lab-col{display:flex;flex-direction:column;gap:18px}
 .verdict-card{padding:24px;border:1px solid var(--bd);border-radius:20px;background:linear-gradient(135deg,#111C33,#0C1426);border-left:5px solid var(--amb)}
 .verdict-card.safe{border-left-color:var(--ok)}
@@ -157,14 +150,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .kpi-v small{font-size:11.5px;color:var(--amb);margin-left:4px}
 .kpi-d{font-size:12px;color:var(--tx-soft);margin-top:6px;line-height:1.45}
 
-/* 2D PDE Canvas */
 .pde-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
 .pde-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 #pdeCv{width:100%;border-radius:14px;border:1px solid var(--bd);background:#04070D;display:block;aspect-ratio:2.25/1;max-height:520px}
 .pde-leg{display:flex;gap:16px;flex-wrap:wrap;font:500 11.5px 'JetBrains Mono',monospace;color:var(--tx-soft);margin-top:10px;align-items:center}
 .pde-leg span i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
 
-/* ========== CREW TOXICOLOGY SECTION ========== */
 .tox-wrap{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:linear-gradient(180deg,rgba(239,68,68,.035),transparent)}
 .tox-layout{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start}
 @media(max-width:1024px){.tox-layout{grid-template-columns:1fr}}
@@ -180,7 +171,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .gas-fill{height:100%;border-radius:6px;transition:width .35s}
 .pearl{padding:14px 16px;border-radius:14px;border:1px solid rgba(56,189,248,.24);background:rgba(56,189,248,.06);font-size:13.5px;line-height:1.6;color:var(--tx);margin-top:10px}
 
-/* ========== WORKBENCH & RESEARCH ========== */
 .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px}
 .tabs button{white-space:nowrap;border:1px solid var(--bd);background:var(--surface);color:var(--tx-soft);padding:10px 16px;border-radius:999px;font:600 12px 'JetBrains Mono',monospace;cursor:pointer;transition:.2s}
 .tabs button:hover{border-color:var(--amb);color:var(--tx)}
@@ -227,7 +217,6 @@ body{padding-left:224px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;lin
 ::selection{background:rgba(40,111,120,.2);color:var(--tx)}
 #pg{left:224px;height:3px;background:linear-gradient(90deg,#286F78,#D35D38)}
 
-/* Permanent mission rail */
 nav{inset:0 auto 0 0;transform:none;width:224px;max-width:none;height:100vh;padding:30px 18px 22px;border:0;border-right:1px solid rgba(233,239,231,.11);border-radius:0;background:#14262D;box-shadow:10px 0 35px rgba(12,27,32,.12);backdrop-filter:none;display:flex;flex-direction:column;align-items:stretch;gap:8px;white-space:normal}
 nav b{display:block;margin:0 0 38px;padding:0 8px 22px;border-bottom:1px solid rgba(233,239,231,.14);font-size:12px;line-height:1.55;letter-spacing:.04em;color:#F1F0E8}
 nav b::before{content:'AM / 26';display:block;margin-bottom:14px;color:#DCA36E;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.18em}
@@ -239,7 +228,6 @@ nav a.act::before{color:#DDA06B}
 nav .st{display:flex;margin:auto 4px 0;padding:18px 6px 0;border:0;border-top:1px solid rgba(233,239,231,.14);font-size:10px;color:#A7B7B4}
 nav .st i{width:7px;height:7px}
 
-/* Hero: cinematic dark stage against a warm technical-paper workspace */
 .hero{min-height:100vh;height:100vh;position:relative;background:#101F27}
 .hs{position:relative;top:auto;height:100vh;min-height:680px;align-items:center;overflow:hidden;background:radial-gradient(ellipse at 78% 45%,#29444A 0%,#172C34 31%,#101F27 70%)}
 .hs::before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(16,31,39,.97) 0%,rgba(16,31,39,.88) 38%,rgba(16,31,39,.12) 75%,rgba(16,31,39,.45) 100%)}
@@ -268,7 +256,6 @@ nav .st i{width:7px;height:7px}
 .hero-secondary:hover{color:#fff;border-color:#DFA16A}
 .play-mark{color:#DFA16A;margin-right:3px}
 
-/* A visual briefing panel that gives the hero a second focal point */
 .hero-console{position:relative;z-index:6;width:min(100%,520px);margin:30px 4% 38px auto;padding:21px 22px 17px;border:1px solid rgba(219,231,224,.24);border-radius:13px;background:linear-gradient(145deg,rgba(22,43,50,.86),rgba(12,27,34,.72));backdrop-filter:blur(18px);box-shadow:0 28px 90px rgba(0,0,0,.24)}
 .hero-console::before{content:'';position:absolute;inset:10px;border:1px solid rgba(219,231,224,.07);border-radius:8px;pointer-events:none}
 .hero-console-top,.hero-console-bottom{position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;color:#9FB1AC;font:600 9px 'JetBrains Mono',monospace;letter-spacing:.12em}
@@ -299,7 +286,6 @@ nav .st i{width:7px;height:7px}
 .grav-badge{right:5vw;bottom:17px;padding:8px 12px;border-radius:7px;border:1px solid rgba(227,237,227,.15);background:rgba(13,27,34,.68);text-align:right;backdrop-filter:blur(10px)}
 .grav-badge span{font-size:8px;color:#9EAFAB}.grav-badge b{font-size:18px;color:#DFA16A}
 
-/* Editorial workspace sections */
 .wrap{max-width:1460px;margin:0 auto;padding:82px clamp(26px,4.2vw,64px) 76px}
 .step-tag{padding:0;margin:0 0 17px;border:0;border-radius:0;background:none;color:#286F78;font-size:9px;letter-spacing:.17em}
 .sec-title{max-width:900px;color:#17292F;font-size:clamp(2rem,3.5vw,3.25rem);line-height:1.04;letter-spacing:-.06em;margin:0 0 13px}
@@ -378,7 +364,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 .story-theater{background:rgba(9,19,23,.96)}.theater-card{border-color:rgba(130,177,169,.3);border-radius:12px}.theater-top{background:#14262D}.theater-top span{color:#9CC8C1}.theater-side{border-left-color:rgba(226,237,228,.14)}
 :focus-visible{outline:3px solid rgba(40,111,120,.45);outline-offset:3px}
 
-/* Breakpoints */
 @media(max-width:1100px){body{padding-left:194px}#pg{left:194px}nav{width:194px;padding-inline:14px}.hero-inner{grid-template-columns:1fr 1fr;padding-inline:4vw;gap:18px}.hero h1{font-size:clamp(3rem,5vw,4.5rem)}.hero-console{margin-right:0}.lab-layout,.tox-layout{grid-template-columns:260px minmax(0,1fr)}}
 @media(max-width:900px){body{padding-left:0}#pg{left:0}nav{position:sticky;top:0;left:auto;inset:auto;width:100%;height:auto;max-width:none;min-height:64px;padding:9px 12px;border-right:0;border-bottom:1px solid rgba(233,239,231,.1);flex-direction:row;align-items:center;gap:4px;z-index:90;overflow-x:auto;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav b{min-width:150px;margin:0 10px 0 0;padding:0 10px 0 2px;border:0;border-right:1px solid rgba(233,239,231,.14);font-size:10px}nav b::before{display:none}nav a{white-space:nowrap;flex:none;padding:10px 9px;font-size:10px}nav a::before{display:none}nav .st{margin:0 0 0 auto;padding:0 8px;border:0;white-space:nowrap}.hero{height:auto;min-height:0}.hs{height:auto;min-height:calc(100svh - 64px);padding:50px 0 70px}.hero-inner{grid-template-columns:1fr 1fr}.hero-console{margin:22px 0}.grav-badge{bottom:12px}.wrap{padding:64px 5vw}.lab-layout,.tox-layout{grid-template-columns:1fr}.controls{position:static}.tox-wrap .wrap{padding-block:64px}}
 @media(max-width:650px){nav{min-height:58px;padding:7px 9px}nav b{min-width:0;width:34px;overflow:hidden;color:transparent;border:0;padding:0;margin-right:4px;position:relative}nav b::after{content:'AM';position:absolute;left:0;top:0;color:#F1F0E8;font:800 12px 'Plus Jakarta Sans',sans-serif}nav a{padding:9px 8px;font-size:9px}nav .st{display:none}.hero-inner{grid-template-columns:1fr;padding:32px 6vw 50px}.hs{min-height:0;padding:22px 0 74px}.hs canvas#hg{left:0;top:0;width:100%;height:70%;opacity:.46}.hs::before{background:linear-gradient(180deg,rgba(16,31,39,.7),rgba(16,31,39,.9) 60%,#101F27)}.hs::after{display:none}.hero h1{font-size:clamp(3rem,13vw,4.6rem);max-width:500px}.hero-desc{font-size:13px;line-height:1.75}.hero-stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:23px}.hstat{padding:12px 7px 11px 0}.hstat+.hstat{padding-left:9px}.hstat span{font-size:7px;line-height:1.4}.hstat b{font-size:12px}.hero-btns{flex-direction:column;align-items:stretch}.hero-btns .btn{justify-content:center}.hero-console{width:100%;margin:28px 0 0;padding:17px}.gravity-state{padding:10px}.state-visual{height:76px}.gravity-state small{font-size:9px}.console-index{display:none}.grav-badge{right:6vw;bottom:12px}.wrap{padding:54px 5vw}.sec-title{font-size:2.25rem}.sec-lead{font-size:13px;margin-bottom:24px}.presets{padding:10px}.presets label{width:100%}.pp{font-size:9px}.panel{padding:14px}.kpi-4{grid-template-columns:repeat(2,minmax(0,1fr))}.tox-split{grid-template-columns:1fr}.tabs{flex-wrap:nowrap}.tabs button{flex:none}.verdict-top{gap:10px}.verdict-num{font-size:2.1rem}.search-row{flex-direction:column}.search-row input{min-height:42px}footer{padding:22px 5vw;gap:8px}}
@@ -386,9 +371,8 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 
-
 <style id="mission-console-redesign-v3">
-/* ---------- Hero: quieter editorial direction ---------- */
+
 .hero{height:auto;min-height:0;background:#101F27}
 .hs{height:auto;min-height:calc(100svh - 0px);padding:0 0 0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 78% 40%,#243C43 0%,#172A31 38%,#101F27 78%)}
 .hs::before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(16,31,39,.98) 0%,rgba(16,31,39,.88) 49%,rgba(16,31,39,.40) 100%)}
@@ -445,7 +429,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 .hero-bottomline-mark{color:#7F9897;font:600 8px 'JetBrains Mono',monospace;letter-spacing:.12em;white-space:nowrap}
 .hero-bottomline-mark span{color:#DFA16A}
 
-/* ---------- Consistent editorial section headers ---------- */
 .section-heading-row{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin-bottom:26px}
 .section-heading-row>div:first-child{min-width:0}
 .section-heading-row .sec-lead{margin-bottom:0}
@@ -454,7 +437,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 .section-index b{font:700 34px 'JetBrains Mono',monospace;letter-spacing:-.08em;color:#D35D38;line-height:1.05}
 .section-index-alert b{color:#B45145}
 
-/* ---------- Simulation lab: instrument console rather than card stack ---------- */
 #lab{padding-top:74px;padding-bottom:56px;background:#E8E9E3}
 #lab .section-heading-row{margin-bottom:28px}
 .scenario-bar{display:flex;align-items:center;gap:24px;padding:13px 16px;margin-bottom:17px;border:1px solid rgba(24,42,48,.13);border-radius:8px;background:#F6F6F0}
@@ -532,7 +514,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 .lab-footnote{display:flex;gap:12px;align-items:flex-start;margin-top:17px;padding-top:12px;border-top:1px solid rgba(24,42,48,.12);color:#718186;font-size:9px;line-height:1.6}
 .lab-footnote span{flex:none;color:#B85C3B;font:700 8px 'JetBrains Mono',monospace;letter-spacing:.12em}
 
-/* ---------- Toxicology: clear control and evidence hierarchy ---------- */
 #toxicology .wrap{padding-top:70px;padding-bottom:76px}
 #toxicology .section-heading-row{margin-bottom:26px}
 #toxicology .tox-layout{grid-template-columns:250px minmax(0,1fr);gap:14px}
@@ -562,7 +543,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 #toxicology .tox-split .kpi-k{font-size:8px;line-height:1.5}
 #toxicology .pearl{margin-top:0;padding:12px 14px;border-radius:6px;background:#F4F5EE;color:#445B5F;font-size:10px}
 
-/* ---------- Evidence workbench and research: cleaner control surfaces ---------- */
 #workbench{padding-top:72px;padding-bottom:76px}
 #workbench .section-heading-row{margin-bottom:25px}
 #workbench .tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:thin;padding:0 0 12px;margin-bottom:13px;border-bottom:1px solid rgba(24,42,48,.14)}
@@ -580,7 +560,6 @@ footer{max-width:1460px;padding:27px clamp(26px,4.2vw,64px);color:#718186;border
 #research .search-row input{background:#F0F2EC}
 #research .ai{background:#EEF3EF;border-radius:6px;font-size:11px}
 
-/* ---------- Responsive composition ---------- */
 @media(max-width:1100px){
  .hero-v3-inner{grid-template-columns:minmax(0,1fr) minmax(310px,.9fr);gap:28px;padding-inline:4vw}
  .hero h1{font-size:clamp(3rem,5.5vw,4.6rem)}
@@ -693,7 +672,6 @@ nav.app-sidebar a.side-link.active{background:rgba(126,177,164,.14)!important;co
 .mobile-bar{display:none}
 .mobile-scrim{display:none}
 
-/* Homepage: a restrained editorial launch screen with a real flame-field canvas. */
 .hero{min-height:0!important;height:auto!important;background:#10262c!important}
 .hero-shell{position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 40%,#28454a 0%,#18343a 34%,#10262c 76%)}
 .hero-shell::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.14;background-image:linear-gradient(rgba(213,234,220,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(213,234,220,.15) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(90deg,transparent,#000 55%,#000)}
@@ -777,7 +755,6 @@ nav.app-sidebar a.side-link.active{background:rgba(126,177,164,.14)!important;co
 .overview-method-note{display:flex;align-items:flex-start;gap:18px;max-width:1400px;margin:27px auto 0;padding:15px 17px;border-left:2px solid #d18a61;background:rgba(255,255,255,.42)}
 .overview-method-note span{flex:none;color:#b86548;font:700 7px 'JetBrains Mono',monospace;letter-spacing:.12em}.overview-method-note p{margin:0;color:#708080;font-size:9px;line-height:1.65}
 
-/* Independent routed pages share consistent content width and spacing. */
 .wrap{max-width:1500px;margin:0 auto;padding:54px clamp(22px,3.5vw,52px) 68px}
 #lab{padding-top:48px;padding-bottom:55px;background:#eef0e9}
 #toxicology{border:0;background:#e9ede6}
@@ -921,7 +898,7 @@ footer{max-width:none;margin:0;padding:24px clamp(22px,3.5vw,52px);border-top:1p
 </style>
 
 <style id="ashes-v5-layout-correction">
-/* Critical shell correction: the old V2 body padding was being added to the V4 app margin. */
+
 @media (min-width: 901px){
   body{padding-left:0!important;margin:0!important;width:100%!important}
   nav.app-sidebar{width:246px!important}
@@ -934,7 +911,7 @@ footer{max-width:none;margin:0;padding:24px clamp(22px,3.5vw,52px);border-top:1p
   .app-main{margin-left:220px!important;width:calc(100% - 220px)!important}
   #pg{left:220px!important}
 }
-/* Homepage: stable two-column composition with deliberate line lengths. */
+
 .hero-main-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important;gap:clamp(28px,4vw,54px)!important;max-width:1320px!important;min-height:560px!important;padding:58px clamp(28px,4.1vw,58px) 46px!important}
 .hero-copy{max-width:560px!important;min-width:0!important}
 .hero h1{max-width:540px!important;font-size:clamp(3.2rem,4.9vw,4.7rem)!important;line-height:1.01!important;letter-spacing:-.068em!important;margin-bottom:20px!important}
@@ -1015,7 +992,7 @@ footer{max-width:none;margin:0;padding:24px clamp(22px,3.5vw,52px);border-top:1p
 </style>
 
 <style id="ashes-v6-layout-and-usability">
-/* Global: one document scroll only; no horizontal or nested data scrolling. */
+
 html,body{width:100%;max-width:100%;overflow-x:hidden!important}
 body{min-width:320px}
 .app-main,.route-main,#routeMain,.wrap,#wbPanel,.research-page,.research-grid,.lab-layout-v3,.lab-col-v3,.tox-layout,#toxOut{min-width:0;max-width:100%}
@@ -1029,7 +1006,6 @@ svg,.pl{max-width:100%;height:auto}
 img,canvas{max-width:100%}
 input,select,textarea,button{max-width:100%}
 
-/* Desktop sidebar is fully closable and can be restored from the top bar. */
 .sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;width:58px;height:34px;padding:0 9px;border:1px solid rgba(31,62,63,.15);border-radius:5px;background:#f7f8f2;color:#36545a;cursor:pointer;transition:background .18s,border-color .18s}
 .sidebar-toggle:hover{background:#e8eee7;border-color:#8ba99b}
 .sidebar-toggle-glyph{font:500 20px/1 'Plus Jakarta Sans',sans-serif}
@@ -1044,7 +1020,6 @@ body.sidebar-collapsed .app-main{margin-left:0!important;width:100%!important}
 body.sidebar-collapsed #pg{left:0!important}
 @media(max-width:680px){.sidebar-toggle{display:none!important}}
 
-/* Fire Lab: controls form a compact full-width instrument strip above the viewport. */
 #lab .lab-layout-v3{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important}
 #lab .lab-control-panel{position:static!important;top:auto!important;display:grid!important;grid-template-columns:minmax(190px,1.2fr) minmax(230px,1.35fr) repeat(2,minmax(145px,.9fr))!important;align-items:end!important;gap:10px 16px!important;width:100%!important;padding:13px 16px 14px!important;margin:0!important}
 #lab .control-panel-head{grid-column:1/-1!important;padding-bottom:9px!important;margin:0!important}
@@ -1075,7 +1050,6 @@ body.sidebar-collapsed #pg{left:0!important}
 #lab .pde-leg span:last-child{max-width:100%!important}
 #lab .lab-results-v3{width:100%;min-width:0}
 
-/* Insight is now an integrated Fire Lab interpretation panel. */
 .insight-panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(280px,1.1fr);gap:24px;align-items:center;margin-top:14px;padding:20px 22px;border:1px solid rgba(24,42,48,.13);border-radius:8px;background:#e6ece5}
 .insight-overline,.dossier-label{color:#b86647;font:700 7px 'JetBrains Mono',monospace;letter-spacing:.15em}
 .insight-panel h3{margin:7px 0 7px;color:#203c41;font-size:19px;letter-spacing:-.04em}
@@ -1086,7 +1060,6 @@ body.sidebar-collapsed #pg{left:0!important}
 .insight-output{margin:0!important;padding:0!important;border:0!important;background:transparent!important;color:#445e60!important;font-size:9px!important;white-space:pre-wrap}
 .insight-output:empty{display:none}
 
-/* Crew controls: full-width compact strip; results follow underneath in document flow. */
 #toxicology .tox-layout{display:flex!important;flex-direction:column!important;gap:14px!important;align-items:stretch!important}
 #toxicology .tox-layout>aside{position:static!important;top:auto!important;display:grid!important;grid-template-columns:minmax(160px,1.05fr) minmax(150px,.8fr) minmax(180px,1fr) minmax(180px,1fr) minmax(190px,1.1fr)!important;gap:12px!important;align-items:center!important;width:100%!important;padding:14px 16px!important;margin:0!important}
 #toxicology .tox-layout>aside>div{min-width:0}
@@ -1094,7 +1067,6 @@ body.sidebar-collapsed #pg{left:0!important}
 #toxicology #toxOut{width:100%;min-width:0}
 #toxicology .tox-split{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important}
 
-/* Research page becomes a real project README + literature workspace. */
 #research.research-page{padding-top:46px!important;padding-bottom:64px!important}
 .research-overview-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(250px,.8fr);gap:14px;margin:25px 0 16px}
 .research-dossier-card,.research-corpus-card,.research-ask-card,.readme-panel,.architecture-card,.source-register{border:1px solid rgba(24,42,48,.12);border-radius:8px;background:#f8f9f3;box-shadow:0 8px 24px rgba(26,47,48,.035)}
@@ -1151,7 +1123,6 @@ body.sidebar-collapsed #pg{left:0!important}
 .research-footer-note>span:first-child{margin-right:6px;color:#bd7658;font:700 7px 'JetBrains Mono',monospace;letter-spacing:.1em}
 .research-footer-note b{color:#35565a}.license-note{margin-left:auto;color:#91a09a;font:600 7px 'JetBrains Mono',monospace}
 
-/* Story theater: five custom animated scenes, timed to 30 seconds total. */
 .story-theater{padding:18px!important;background:rgba(7,18,22,.94)!important}
 .theater-card{width:min(1120px,96vw)!important;border:1px solid rgba(137,181,165,.25)!important;border-radius:10px!important;background:#10252b!important;box-shadow:0 28px 90px rgba(0,0,0,.48)!important}
 .theater-top{min-height:54px;padding:12px 18px!important;background:#173139!important;border-bottom:1px solid rgba(216,235,223,.1)!important}
@@ -1259,20 +1230,20 @@ body.sidebar-collapsed #pg{left:0!important}
 footer{font-size:11.5px!important}
 </style>
 <style id="readability-lift-v4">
-/* Absolute minimum readable floor — 11px */
+
 html{font-size:16px}
-/* Body text */
+
 p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit)!important;line-height:1.6!important}
-/* Small labels get a floor */
+
 [class*="label"],[class*="caption"],[class*="overline"],[class*="footnote"],[class*="note"],[class*="kicker"]{font-size:max(10px,inherit)!important}
-/* Chips / badges / tiny */
+
 .bdg,[class*="chip"],[class*="tag"]{font-size:max(10px,inherit)!important}
-/* Story theater scene text */
+
 .scene-text{font-size:13px!important;line-height:1.65!important}
 .scene-data{font-size:11px!important}
-/* Research cards */
+
 .research-dossier-card p,.research-corpus-card p,.architecture-card p,.source-register-grid p{font-size:12px!important;line-height:1.65!important}
-/* Overflow safety (layout fix) */
+
 .research-footer-note,.dossier-tags,.corpus-sources,.hero-data-rail-note{overflow-wrap:break-word;word-break:normal}
 .hero-data-rail-note b,.readme-metric-row>span,.gas-head span{overflow-wrap:anywhere}
 .gas-head{flex-wrap:wrap;gap:4px 8px}
@@ -1284,20 +1255,17 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
 }
 </style>
 <style id="readability-v5-final">
-/* ===== 1. MENU toggle button ===== */
+
 .sidebar-toggle{min-width:80px!important;height:38px!important;padding:0 12px!important;gap:9px!important}
 .sidebar-toggle-label{font-size:10px!important;letter-spacing:.12em!important}
 .sidebar-toggle-glyph{font-size:22px!important}
 
-/* ===== 2. Hero SVG labels — bump via attribute selectors ===== */
 .hero-art-stage svg g[font-size="11"]{font-size:15px!important}
 .hero-art-stage svg g[font-size="9"]{font-size:13px!important}
 .hero-art-stage svg text[font-size="8"]{font-size:12px!important}
 
-/* ===== 3. Sidebar brand — center in block ===== */
 .sidebar-brand{padding:8px 9px 20px!important}
 
-/* ===== 4. Hero art micro-labels (top of card + bottom + overlay) ===== */
 .hero-art-head{font-size:10px!important;padding:14px 16px!important}
 .hero-art-head b{font-size:10px!important}
 .hero-art-foot{font-size:10px!important;padding:14px 16px!important}
@@ -1307,14 +1275,12 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
 .art-callout span{font-size:9px!important}
 .art-callout b{font-size:11px!important}
 
-/* ===== 5. Hero data rail — bump smallest ===== */
 .hero-data-item span{font-size:10px!important}
 .hero-data-item>small{font-size:10px!important;line-height:1.5!important}
 .hero-data-item>b small{font-size:11px!important}
 .hero-data-rail-note span{font-size:10px!important}
 .hero-data-rail-note b{font-size:11px!important}
 
-/* ===== 6. Sidebar small text ===== */
 .sidebar-caption{font-size:10px!important}
 .sidebar-footnote{font-size:10px!important;line-height:1.75!important}
 .sidebar-system{font-size:10px!important}
@@ -1322,7 +1288,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
 .brand-wordmark small{font-size:9px!important;letter-spacing:.16em!important}
 .side-index{font-size:10px!important}
 
-/* ===== 7. Team attribution block — 2 lines ===== */
 .research-team-block{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:8px!important;padding:16px 18px!important;border-top:1px solid rgba(24,42,48,.12)!important;margin-top:12px}
 .research-team-label{font:700 10px 'JetBrains Mono',monospace!important;letter-spacing:.13em!important;color:#ad654b!important;margin-bottom:2px}
 .research-team-row{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:6px!important;width:100%!important;font-size:12.5px!important;line-height:1.7!important;color:#5b6d70!important}
@@ -1334,7 +1299,7 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
 }
 </style>
 <style id="pde-fix-v6">
-/* Fix canvas aspect distortion (click accuracy) */
+
 #lab #pdeCv{
   width:100%!important;
   height:auto!important;
@@ -1345,7 +1310,7 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   border-radius:3px;
   background:#071219;
 }
-/* Kill old CSS corner overlays entirely (canvas draws its own header now) */
+
 .canvas-corner{display:none!important}
 .canvas-frame{padding:10px!important}
 </style>
@@ -1384,7 +1349,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   </header>
   <main id="routeMain" class="route-main">
 
-<!-- ========== HERO ========== -->
 <section class="hero" id="top" data-page="overview">
   <div class="hero-shell">
     <div class="hero-main-grid">
@@ -1498,7 +1462,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   <div class="overview-method-note"><span>MODEL SCOPE</span><p>This is a research and screening platform, not a certified spacecraft fire-safety system or clinical decision tool. Results should be interpreted with the displayed assumptions, validation coverage and uncertainty.</p></div>
 </section>
 
-<!-- ========== ANIMATED VISUAL STORY THEATER ========== -->
 <div class="story-theater" id="storyTheater" role="dialog" aria-modal="true">
   <audio id="storyAudio" src="/static/audio/story.mp3" preload="auto"></audio>
   <div class="theater-card">
@@ -1534,7 +1497,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   </div>
 </div>
 
-<!-- ========== SECTION 1: COMBUSTION & 2D PDE LAB ========== -->
 <section class="wrap" id="lab" data-page="fire-lab">
   <div class="section-heading-row">
     <div>
@@ -1594,7 +1556,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   <div class="lab-footnote"><span>MODEL NOTE</span> Reduced-order combustion model with a transient 2D thermal-pyrolysis field. Applicability varies by material and flight-data coverage.</div>
 </section>
 
-<!-- ========== SECTION 2: CREW TOXICOLOGY & CLINICAL TRIAGE ========== -->
 <section class="tox-wrap" id="toxicology" data-page="crew-lab">
   <div class="wrap">
     <div class="section-heading-row tox-heading-row">
@@ -1650,7 +1611,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   </div>
 </section>
 
-<!-- ========== SECTION 3: FLIGHT VALIDATION & ANALYSIS WORKBENCH ========== -->
 <section class="wrap" id="workbench" data-page="validation">
   <div class="section-heading-row">
     <div>
@@ -1673,7 +1633,6 @@ p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit
   <div class="panel" id="wbPanel"></div>
 </section>
 
-<!-- ========== SECTION 4: RESEARCH LIBRARY & PROJECT README ========== -->
 <section class="wrap research-page" id="research" data-page="research">
   <div class="section-heading-row">
     <div>
@@ -1871,7 +1830,6 @@ async function many(list,fn,n=10){
   return out;
 }
 
-// ===== BUILD CONTROLS =====
 function buildControls(){
   $('side').innerHTML=`
     <div class="control-panel-head"><span>INPUT PARAMETERS</span><b>LIVE MODEL</b></div>
@@ -1977,7 +1935,6 @@ function plainExplanation(q,r){
   return `🔥 ${speedDesc.charAt(0).toUpperCase()+speedDesc.slice(1)} flame at ${r.flame_spread_mms} mm/s (${(r.flame_spread_mms*6).toFixed(1)} cm per minute) in the ${r.thermal_regime?.toLowerCase()||'solid'} fuel regime.${edgeNote}`;
 }
 
-// ===== MAIN SIMULATION & TOXICOLOGY UPDATE =====
 async function up(){
   const t=++tok,q=S();
   SL.forEach(s=>{const el=$(s[0]+'v');if(el)el.textContent=(s[0]=='g'?F(q.g):+q[s[0]])+' '+s[5]});
@@ -1990,12 +1947,7 @@ async function up(){
     const applicScore=r.applicability_score??r.confidence_score;
     const ai=r.surrogate;
     const tox=r.toxicology;
-
-    const aiCard=ai?`<div class="kpi">
-      <div class="kpi-k">AI Cross-Check <span class="bdg ai-bdg" style="font-size:9px;padding:1px 6px">41-D</span></div>
-      <div class="kpi-v">${F(ai.spread_mms,3)}<small>mm/s</small></div>
-      <div class="kpi-d">Matches physics within ${F(Math.abs(ai.delta_pct_vs_physics),1)}% (±${F(ai.ensemble_disagreement_mms,3)} spread)</div>
-    </div>`:`<div class="kpi"><div class="kpi-k">AI Cross-Check</div><div class="kpi-v">Extinct</div><div class="kpi-d">Physics boundary triggered</div></div>`;
+    const aiCard=ai?`<div class="kpi"><div class="kpi-k">AI Cross-Check <span class="bdg ai-bdg">41-D</span></div><div class="kpi-v">${F(ai.spread_mms,3)}<small>mm/s</small></div><div class="kpi-d">Matches physics within ${F(Math.abs(ai.delta_pct_vs_physics),1)}%</div></div>`:(r.is_extinct?`<div class="kpi"><div class="kpi-k">AI Cross-Check</div><div class="kpi-v">Extinct</div><div class="kpi-d">Physics boundary triggered</div></div>`:`<div class="kpi"><div class="kpi-k">AI Cross-Check <span class="bdg warn">LITE</span></div><div class="kpi-v" style="font-size:15px;color:var(--mu)">Not loaded</div><div class="kpi-d">Surrogate available in full Docker deploy</div></div>`);
 
     $('pred').innerHTML=`
       <div class="verdict-card ${r.is_extinct?'safe':''}">
@@ -2050,7 +2002,6 @@ async function up(){
   }
 }
 
-// ===== RENDER CREW TOXICOLOGY PANEL =====
 function renderToxicology(tox){
   const gases=tox.gases_ppm||{};
   const gasLabels={
@@ -2163,7 +2114,6 @@ async function refreshToxicologyOnly(){
   }catch(e){}
 }
 
-// ===== 2D FLAME SOLVER =====
 async function update2D(q){
   const cvs=$('pdeCv');if(!cvs)return;
   const requestId=(window.__ashesPdeRequest=(window.__ashesPdeRequest||0)+1);
@@ -2226,7 +2176,6 @@ function render2D(sim,idx){
   const T=snap.temperature_K,nx=T.length,ny=T[0].length;
   const tMin=298.15,tMax=Math.max(700,...T.flat());
 
-  // Smooth heatmap via ImageData + bilinear upscale
   const small=document.createElement('canvas');small.width=nx;small.height=ny;
   const sctx=small.getContext('2d');
   const img=sctx.createImageData(nx,ny);
@@ -2245,7 +2194,6 @@ function render2D(sim,idx){
   ctx.imageSmoothingQuality='high';
   ctx.drawImage(small,0,0,nx,ny,padL,padT,plotW,plotH);
 
-  // Flame front — segment-aware (no cross-row spike)
   const contour=snap.front_contour_mm||[];
   if(contour.length===ny){
     const sm=contour.slice();
@@ -2267,14 +2215,12 @@ function render2D(sim,idx){
     ctx.shadowBlur=0;
   }
 
-  // Clamped edges
   if(sim.edge_boundary==='clamped'){
     ctx.fillStyle='rgba(100,116,139,0.85)';
     ctx.fillRect(padL,padT-3,plotW,3);
     ctx.fillRect(padL,padT+plotH,plotW,3);
   }
 
-  // Point ignition marker — pulsing target
   if(window._ignState?.mode==='point'&&Array.isArray(window._ignState.pos)){
     const ix=padL+window._ignState.pos[0]*plotW;
     const iy=padT+window._ignState.pos[1]*plotH;
@@ -2292,11 +2238,9 @@ function render2D(sim,idx){
     ctx.stroke();
   }
 
-  // Frame
   ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;
   ctx.strokeRect(padL,padT,plotW,plotH);
 
-  // Axis labels
   ctx.fillStyle='#94A3B8';ctx.font='12px JetBrains Mono,monospace';
   ctx.textAlign='center';
   ctx.fillText('0',padL,H-26);
@@ -2304,7 +2248,6 @@ function render2D(sim,idx){
   ctx.textAlign='left';
   ctx.fillText(`W ${W_mm} mm`,8,padT+plotH/2+4);
 
-  // Header — 2 lines, above plot, no overlap
   ctx.textAlign='left';
   ctx.fillStyle='#FBBF24';ctx.font='bold 12px JetBrains Mono,monospace';
   ctx.fillText(`t = ${snap.t}s`,padL,26);
@@ -2313,7 +2256,6 @@ function render2D(sim,idx){
   ctx.fillStyle='#CBD5E1';
   ctx.fillText(`Burned ${snap.burned_area_pct}%   Max reach ${snap.max_front_mm} mm`,padL,42);
 }
-// ===== WORKBENCH TABS =====
 async function renderWorkbench(tName){
   activeTab=tName;
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tName));
@@ -2415,7 +2357,6 @@ function bars(l){
   return l.map(x=>`<div class="row"><span title="${esc(x[0])}">${esc(x[0])}</span><div class="bar"><i style="width:${Math.max(1,x[1]/mx*100)}%"></i></div><em>${esc(x[2])}</em></div>`).join('');
 }
 
-// ===== HERO WEBGL FLAME =====
 const hero=document.querySelector('.hero');
 let hg=1;
 function hupd(){
@@ -2480,7 +2421,6 @@ function flameGL(c,gf){
   })(0);
 }
 
-// ===== ANIMATED 5-SCENE STORY THEATER =====
 const SCENES=[
   {
     pill:"01 / EARTH · 1 g",
@@ -2565,7 +2505,6 @@ function drawStoryScene(tMs){
     storyText(ctx,"FED",477,252,teal,9);storyRound(ctx,477,265,198,8,4,"#29494c",null);storyRound(ctx,477,265,62+Math.sin(t*1.1)*7,8,4,"#75a99a",null);
     storyText(ctx,"MODELLED INDICATORS",475,310,muted,8);storyText(ctx,"ASSUMPTIONS MATTER",380,410,muted,9,"center");
   }
-  // Persistent footer gives the five scenes a coherent documentary frame.
   storyLine(ctx,32,452,W-32,452,"rgba(161,192,178,.18)");
   storyText(ctx,"ASHES OF MICROGRAVITY",34,444,"#8fa99f",7);
   storyText(ctx,`SCENE 0${sceneIdx+1} / 05`,W-34,444,"#8fa99f",7,"right");
@@ -2623,7 +2562,6 @@ function closeStoryTheater(){
   const au=$('storyAudio');if(au){au.pause();try{au.currentTime=0;}catch(e){}}
 }
 
-// ===== WIRE EVENTS =====
 function wire(){
   const side=$('side');
   side.oninput=()=>{clearTimeout(deb);deb=setTimeout(up,200)};
@@ -2703,8 +2641,6 @@ async function boot(){
   }
 }
 
-
-// ---------- Multi-page route controller (hash routes; static-host friendly) ----------
 const ROUTE_META={
   overview:{title:'Mission overview',context:'SYSTEM OVERVIEW'},
   'fire-lab':{title:'Fire simulation lab',context:'MODULE 01 / COMBUSTION'},

@@ -256,7 +256,7 @@ def train():
     joblib.dump(scaler_y, save_dir / "scaler_y.pkl")
 
     # ---- Final held-out report (ensemble) ----
-    P = np.stack(member_test_preds)                 # (members, n_test, 3)
+    P = np.stack(member_test_preds)
     ens_log = P[:, :, 0].mean(axis=0)
     ens_std = P[:, :, 0].std(axis=0)
     true_log = y_test_raw[:, 0]

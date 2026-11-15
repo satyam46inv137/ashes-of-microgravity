@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-# save as check_surrogate_drift.py
 import random, numpy as np
 from backend.fire_model import FireModel
 from backend.materials import MAT_DICT
