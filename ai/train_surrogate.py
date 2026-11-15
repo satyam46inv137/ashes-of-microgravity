@@ -1,9 +1,3 @@
-"""
-Training pipeline for the 5-model Physics-Informed Neural Surrogate Ensemble.
-Generates 35,000 stratified samples across microgravity, lunar/Martian, and terrestrial
-regimes, including Quasi-2D sample widths and edge boundary conditions.
-"""
-
 import copy
 import logging
 import random
@@ -38,12 +32,12 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 N_SAMPLES = 35000
-EPOCHS = 300            # real epochs now (each = ~N_train/BATCH_SIZE optimizer steps)
-BATCH_SIZE = 256        # mini-batch training (was full-batch: 1 step per "epoch")
+EPOCHS = 300
+BATCH_SIZE = 256
 LR = 1e-3
 WEIGHT_DECAY = 1e-5
 PATIENCE = 25
-LOSS_WEIGHTS = (1.0, 0.25, 0.25)   # log10(spread) matters most; T_flame / V_eff are near-deterministic
+LOSS_WEIGHTS = (1.0, 0.25, 0.25)
 SPREAD_MIN = 0.005
 SPREAD_MAX = 35.0
 SEED = 42
@@ -57,7 +51,6 @@ def generate_training_data(model, n_samples=N_SAMPLES):
     for _ in tqdm(range(n_samples), desc="Generating"):
         mat = random.choice(MATERIALS_118)
 
-        # Stratified gravity sampling: 30% microgravity (0-0.01g), 35% Moon/Mars, 35% Earth/hyper-g
         r_g = random.random()
         if r_g < 0.30:
             g = random.uniform(0.0, 0.01)
@@ -69,7 +62,6 @@ def generate_training_data(model, n_samples=N_SAMPLES):
         p = random.uniform(40.0, 120.0)
         o2 = random.uniform(12.0, 35.0)
         flow = random.uniform(0.5, 48.0)
-        # Stratified thickness sampling to cover thin (<1mm), transitional (0.5-2mm), and thick (>2mm)
         thick = random.uniform(0.1, 2.5) if random.random() < 0.45 else random.uniform(2.5, 20.0)
         cfg = random.choice(["Opposed", "Concurrent"])
 
@@ -162,9 +154,6 @@ def train():
     spread_log = y[:, 0]
     logger.info(f"Dataset shape: X={X.shape}, y={y.shape}")
     logger.info(f"Spread range: {10**spread_log.min():.4f} - {10**spread_log.max():.2f} mm/s")
-
-    # 70 / 15 / 15 split. Validation drives early stopping + LR schedule only;
-    # the test split is never touched until the final report.
     X_train_raw, X_tmp, y_train_raw, y_tmp = train_test_split(X, y, test_size=0.30, random_state=SEED)
     X_val_raw, X_test_raw, y_val_raw, y_test_raw = train_test_split(X_tmp, y_tmp, test_size=0.50, random_state=SEED)
 
@@ -255,7 +244,6 @@ def train():
     joblib.dump(scaler_X, save_dir / "scaler_X.pkl")
     joblib.dump(scaler_y, save_dir / "scaler_y.pkl")
 
-    # ---- Final held-out report (ensemble) ----
     P = np.stack(member_test_preds)
     ens_log = P[:, :, 0].mean(axis=0)
     ens_std = P[:, :, 0].std(axis=0)
@@ -274,7 +262,6 @@ def train():
     logger.info("=" * 78)
     logger.info(f"Training complete! Mean val loss: {np.mean(val_losses):.5f}")
 
-    # ---- Persist held-out report as JSON artifact for README / provenance ----
     import json
     heldout_report = {
         "overall": overall,
