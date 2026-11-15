@@ -1235,13 +1235,128 @@ body.sidebar-collapsed #pg{left:0!important}
 @media(prefers-reduced-motion:reduce){.story-progress-track i{transition:none!important}}
 </style>
 
+<style id="readability-lift-v1">
+.sec-lead{font-size:14.5px!important;line-height:1.72!important}
+.step-tag,.dossier-label,.insight-overline,.viewport-overline,.lbl{font-size:11px!important;letter-spacing:.11em!important}
+.hero-desc{font-size:15px!important;line-height:1.75!important}
+.hero-trust-note,.hero-data-item small,.hero-data-rail-note b{font-size:11.5px!important}
+.hero-data-item span{font-size:10px!important}
+.overview-card p{font-size:12.5px!important;line-height:1.6!important}
+.overview-card-top,.overview-card-link,.overview-method-note p{font-size:11.5px!important}
+.kpi-k{font-size:10.5px!important}
+.kpi-d,.verdict-plain,.pearl,.lab-footnote,.validation-method-note span,.crew-model-note span{font-size:12.5px!important;line-height:1.6!important}
+.triage-box>div:first-child>div:nth-child(2){font-size:17px!important}
+.gas-head{font-size:12.5px!important}
+.tw th{font-size:11px!important}
+.tw td{font-size:12.5px!important}
+.row{font-size:12.5px!important}
+.fm{font-size:12.5px!important;line-height:1.8!important}
+.ai,.research-answer,.insight-output{font-size:13.5px!important;line-height:1.7!important}
+.research-dossier-card p,.research-corpus-card p,.research-ask-head p,.architecture-card p,.readme-metric-row>span,.readme-caveat,.readme-list,.source-register-grid p,.research-footer-note{font-size:13px!important;line-height:1.65!important}
+.architecture-card h4{font-size:15px!important}
+.scene-text{font-size:13.5px!important;line-height:1.7!important}
+.scene-data{font-size:11.5px!important}
+footer{font-size:11.5px!important}
+</style>
+<style id="readability-lift-v4">
+/* Absolute minimum readable floor — 11px */
+html{font-size:16px}
+/* Body text */
+p,li,span:not([class]):not(.bdg):not(.preset-code),td{font-size:max(11px,inherit)!important;line-height:1.6!important}
+/* Small labels get a floor */
+[class*="label"],[class*="caption"],[class*="overline"],[class*="footnote"],[class*="note"],[class*="kicker"]{font-size:max(10px,inherit)!important}
+/* Chips / badges / tiny */
+.bdg,[class*="chip"],[class*="tag"]{font-size:max(10px,inherit)!important}
+/* Story theater scene text */
+.scene-text{font-size:13px!important;line-height:1.65!important}
+.scene-data{font-size:11px!important}
+/* Research cards */
+.research-dossier-card p,.research-corpus-card p,.architecture-card p,.source-register-grid p{font-size:12px!important;line-height:1.65!important}
+/* Overflow safety (layout fix) */
+.research-footer-note,.dossier-tags,.corpus-sources,.hero-data-rail-note{overflow-wrap:break-word;word-break:normal}
+.hero-data-rail-note b,.readme-metric-row>span,.gas-head span{overflow-wrap:anywhere}
+.gas-head{flex-wrap:wrap;gap:4px 8px}
+.row{flex-wrap:wrap}
+.row span{white-space:normal!important;overflow:visible!important;text-overflow:unset!important}
+@media(max-width:680px){
+  .gas-head{gap:2px}
+  .hero-data-item>small,.hero-data-item span{font-size:9px!important}
+}
+</style>
+<style id="readability-v5-final">
+/* ===== 1. MENU toggle button ===== */
+.sidebar-toggle{min-width:80px!important;height:38px!important;padding:0 12px!important;gap:9px!important}
+.sidebar-toggle-label{font-size:10px!important;letter-spacing:.12em!important}
+.sidebar-toggle-glyph{font-size:22px!important}
+
+/* ===== 2. Hero SVG labels — bump via attribute selectors ===== */
+.hero-art-stage svg g[font-size="11"]{font-size:15px!important}
+.hero-art-stage svg g[font-size="9"]{font-size:13px!important}
+.hero-art-stage svg text[font-size="8"]{font-size:12px!important}
+
+/* ===== 3. Sidebar brand — center in block ===== */
+.sidebar-brand{padding:8px 9px 20px!important}
+
+/* ===== 4. Hero art micro-labels (top of card + bottom + overlay) ===== */
+.hero-art-head{font-size:10px!important;padding:14px 16px!important}
+.hero-art-head b{font-size:10px!important}
+.hero-art-foot{font-size:10px!important;padding:14px 16px!important}
+.art-coordinate{font-size:10px!important}
+.art-scale{font-size:9px!important;gap:8px}
+.art-scale b{font-size:9px!important}
+.art-callout span{font-size:9px!important}
+.art-callout b{font-size:11px!important}
+
+/* ===== 5. Hero data rail — bump smallest ===== */
+.hero-data-item span{font-size:10px!important}
+.hero-data-item>small{font-size:10px!important;line-height:1.5!important}
+.hero-data-item>b small{font-size:11px!important}
+.hero-data-rail-note span{font-size:10px!important}
+.hero-data-rail-note b{font-size:11px!important}
+
+/* ===== 6. Sidebar small text ===== */
+.sidebar-caption{font-size:10px!important}
+.sidebar-footnote{font-size:10px!important;line-height:1.75!important}
+.sidebar-system{font-size:10px!important}
+.sidebar-system b{font-size:9px!important}
+.brand-wordmark small{font-size:9px!important;letter-spacing:.16em!important}
+.side-index{font-size:10px!important}
+
+/* ===== 7. Team attribution block — 2 lines ===== */
+.research-team-block{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:8px!important;padding:16px 18px!important;border-top:1px solid rgba(24,42,48,.12)!important;margin-top:12px}
+.research-team-label{font:700 10px 'JetBrains Mono',monospace!important;letter-spacing:.13em!important;color:#ad654b!important;margin-bottom:2px}
+.research-team-row{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:6px!important;width:100%!important;font-size:12.5px!important;line-height:1.7!important;color:#5b6d70!important}
+.research-team-row b{color:#284047!important;font-weight:700!important;font-size:12.5px!important}
+.research-team-row span{color:#5b6d70!important}
+.research-team-row .license-note{margin-left:auto!important;font-size:10px!important;color:#8d9c97!important;white-space:nowrap!important}
+@media(max-width:680px){
+  .research-team-row .license-note{margin-left:0!important;margin-top:6px!important;white-space:normal!important}
+}
+</style>
+<style id="pde-fix-v6">
+/* Fix canvas aspect distortion (click accuracy) */
+#lab #pdeCv{
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:1360/580!important;
+  max-height:none!important;
+  display:block;
+  border:1px solid rgba(198,218,206,.22);
+  border-radius:3px;
+  background:#071219;
+}
+/* Kill old CSS corner overlays entirely (canvas draws its own header now) */
+.canvas-corner{display:none!important}
+.canvas-frame{padding:10px!important}
+</style>
 </head>
 <body>
 <div id="pg"></div>
 <nav class="app-sidebar" id="appSidebar" aria-label="Main navigation">
   <a class="sidebar-brand" href="#/overview" aria-label="Ashes of Microgravity home">
     <span class="brand-symbol"><i></i><i></i><i></i></span>
-    <span class="brand-wordmark">ASHES <small>OF MICROGRAVITY</small></span>
+    <span class="brand-wordmark">
+      ASHES <small>OF MICROGRAVITY</small></span>
   </a>
   <div class="sidebar-divider"></div>
   <div class="sidebar-caption">RESEARCH WORKSPACE</div>
@@ -1342,7 +1457,7 @@ body.sidebar-collapsed #pg{left:0!important}
     <div class="hero-data-rail">
       <div class="hero-data-item"><span>REFERENCE FLIGHT CASES</span><b>13</b><small>Saffire / BASS-II</small></div>
       <div class="hero-data-item"><span>MATERIAL LIBRARY</span><b>118 <small>modelled</small></b><small>3 with direct microgravity flight calibration</small></div>
-      <div class="hero-data-item"><span>CORE VALIDATION</span><b>2.83<small>% MAPE</small></b><small>In-sample · 5 core cases</small></div>
+      <div class="hero-data-item"><span>NESTED LOO ERROR</span><b>10.4 – 12.3 <small>% MAPE</small></b><small>5.90% in-sample · 16 constants refit</small></div>
       <div class="hero-data-rail-note"><span>ONE CONNECTED MODEL</span><b>FLAME <i>→</i> CABIN AIR <i>→</i> CREW EXPOSURE</b></div>
     </div>
   </div>
@@ -1385,10 +1500,14 @@ body.sidebar-collapsed #pg{left:0!important}
 
 <!-- ========== ANIMATED VISUAL STORY THEATER ========== -->
 <div class="story-theater" id="storyTheater" role="dialog" aria-modal="true">
+  <audio id="storyAudio" src="/static/audio/story.mp3" preload="auto"></audio>
   <div class="theater-card">
     <div class="theater-top">
       <div class="theater-top-copy"><span id="theaterStepLbl">SCENE 1 OF 5 · 30-SECOND SCIENCE STORY</span><small id="storyClock">00:00 / 00:30</small></div>
-      <button class="btn" id="closeStoryBtn" type="button" style="padding:6px 14px;font-size:11px">✕ Close</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn" id="storyMuteBtn" type="button" style="padding:6px 12px;font-size:11px">🔊 Audio On</button>
+        <button class="btn" id="closeStoryBtn" type="button" style="padding:6px 14px;font-size:11px">✕ Close</button>
+      </div>
     </div>
     <div class="story-progress-track" aria-hidden="true"><i id="storyProgress"></i></div>
     <div class="theater-body">
@@ -1453,7 +1572,7 @@ body.sidebar-collapsed #pg{left:0!important}
           <div class="viewport-meta"><span>MODEL</span><b>TRANSIENT PDE</b><span>OUTPUT</span><b>TEMPERATURE / K</b></div>
         </div>
         <div class="viewport-toolbar"><span class="viewport-toolbar-label">SIMULATION PLAYBACK</span><div class="pde-controls" id="pdeControls"></div></div>
-        <div class="canvas-frame"><canvas id="pdeCv" width="1360" height="580"></canvas><div class="canvas-corner canvas-corner-tl">THERMAL FIELD / LIVE OUTPUT</div><div class="canvas-corner canvas-corner-br">ASHES LAB · 2D</div></div>
+        <div class="canvas-frame"><canvas id="pdeCv" width="1360" height="580"></canvas></div>
         <div class="pde-leg" id="pdeLegend"></div>
       </section>
       <div id="pred" class="lab-results-v3">
@@ -1543,14 +1662,14 @@ body.sidebar-collapsed #pg{left:0!important}
   </div>
 
   <div class="tabs" id="tabs" role="tablist">
-    <button type="button" class="on" data-tab="parity">NASA Flight Parity (2.83% MAPE)</button>
+    <button type="button" class="on" data-tab="parity">NASA Flight Parity (5.90% In-Sample · 10.4% Nested LOO)</button>
     <button type="button" data-tab="ranking">Fire vs. Toxicity Material Ranking</button>
     <button type="button" data-tab="sweep">Gravity Sweep (0g → 1.5g)</button>
     <button type="button" data-tab="sens">What Drives Spread Most?</button>
     <button type="button" data-tab="trans">Burn-Through Over Time</button>
     <button type="button" data-tab="provenance">Equations &amp; NASA-STD-7009A Audit</button>
   </div>
-  <div class="validation-method-note"><b>HOW TO READ THESE METRICS</b><span>2.83% is the core five-case in-sample MAPE. The 13-point 6.68% LOO refits four selected parameters per fold; other empirical parameters previously fit on the full dataset remain fixed, so this is not fully leakage-free and may be optimistic.</span></div>
+  <div class="validation-method-note"><b>HOW TO READ THESE METRICS</b><span>Core in-sample MAPE is 2.83% (5 runs), Combined 13-run in-sample MAPE is 5.90% (R² = 0.993). Under strict fully nested leave-one-out validation (refitting all 16 empirical constants from scratch per fold across 3 seeds), MAPE is 10.4–12.3%.</span></div>
   <div class="panel" id="wbPanel"></div>
 </section>
 
@@ -1558,34 +1677,37 @@ body.sidebar-collapsed #pg{left:0!important}
 <section class="wrap research-page" id="research" data-page="research">
   <div class="section-heading-row">
     <div>
-      <div class="step-tag">04 / REFERENCE LIBRARY &amp; PROJECT DOSSIER</div>
-      <h2 class="sec-title">Research library</h2>
-      <p class="sec-lead">Explore the evidence base, ask open questions against indexed NASA report excerpts, and read how the Ashes of MicroGravity model is assembled and evaluated.</p>
+      <div class="step-tag">04 / PROJECT DOCUMENTATION &amp; NASA LITERATURE</div>
+      <h2 class="sec-title">Project Dossier &amp; Research Library</h2>
+      <p class="sec-lead">Complete technical specification, flight-calibration audit, crew toxicology methodology, and citation-grounded Q&amp;A over 3,426 indexed NASA report chunks.</p>
     </div>
-    <div class="section-index"><span>KNOWLEDGE MODULE</span><b>04</b><i>NASA PAPERS / README</i></div>
+    <div class="section-index"><span>DOCUMENTATION</span><b>04</b><i>README / RAG</i></div>
   </div>
-
   <div class="research-overview-grid">
     <article class="research-dossier-card">
-      <div class="dossier-label">PROJECT README / AT A GLANCE</div>
-      <h3>From flame spread to crew exposure.</h3>
-      <p>A connected research workspace combining multi-gravity combustion estimates, a transient 2D thermal-pyrolysis solver, surrogate cross-checks and a well-mixed cabin toxicology model.</p>
-      <div class="dossier-tags"><span>COMBUSTION PHYSICS</span><span>2D PDE</span><span>CREW TOXICOLOGY</span><span>NASA RAG</span></div>
-      <a class="dossier-download" href="./Ashes_of_MicroGravity_README.md" download>Download project README <b>↓</b></a>
+      <div class="dossier-label">NASA SPACE APPS 2026 · FLAME IN FREEFALL</div>
+      <h3>Fire does not rise in orbit. Without buoyancy, it creeps spherically and fills cabins with invisible toxicants.</h3>
+      <p>Full 3D reacting CFD takes hours per run and rarely models downstream crew health. <b>Ashes of Microgravity</b> couples reduced-order flame-spread physics (de Ris / Quintiere), a 2D thermal-pyrolysis PDE solver, a 41-feature PyTorch ensemble, and a dynamic cabin toxicology ODE (ISO 13571 FED &amp; CFK COHb%) to screen both material flammability and crew survival in milliseconds.</p>
+      <div class="dossier-tags"><span>13 NASA FLIGHT RUNS</span><span>2D THERMAL PDE</span><span>41-D PYTORCH ENSEMBLE</span><span>NASA JSC 20584 SMACs</span><span>ISO 13571 FED</span></div>
+      <a class="dossier-download" href="#download-readme" id="dlReadmeBtn">Download Technical Dossier (.md) <b>↓</b></a>
     </article>
     <article class="research-corpus-card">
-      <div class="corpus-top"><span class="corpus-dot"></span> INDEXED RESEARCH CORPUS</div>
+      <div class="corpus-top"><span class="corpus-dot"></span> GROUNDED LITERATURE RAG</div>
       <div class="corpus-count">3,426 <small>chunks</small></div>
-      <p>NASA Saffire, BASS-II and SoFIE report excerpts indexed for retrieval-augmented question answering.</p>
-      <div class="corpus-sources"><span>SAFFIRE I–V</span><span>BASS-II</span><span>SoFIE</span></div>
-      <small class="corpus-note">Retrieved passages should be checked against the cited report context.</small>
+      <p>ChromaDB vector index over NASA Saffire I–V, BASS-II, and SoFIE combustion reports with cosine-distance anti-hallucination filtering (≤ 1.4) and offline extractive fallback.</p>
+      <div class="corpus-sources"><span>SAFFIRE I–V</span><span>BASS-II</span><span>SoFIE</span><span>NTRS</span></div>
+      <small class="corpus-note">Research &amp; educational screening tool only — not a substitute for NASA-STD-6001B testing or clinical medical advice.</small>
     </article>
   </div>
-
   <section class="research-ask-card">
     <div class="research-ask-head">
-      <div><div class="dossier-label">ASK THE SOURCE MATERIAL</div><h3>Search NASA microgravity fire research</h3><p>Enter your own question. The assistant retrieves relevant indexed excerpts and returns the source references available to the backend.</p></div>
-      <div class="ask-mark">Q / A</div>
+      <div><div class="dossier-label">ASK THE NASA CORPUS</div><h3>Query Microgravity Combustion Reports</h3><p>Ask about limiting oxygen index in 0g, Saffire fabric vs. PMMA slab behavior, forced ventilation thresholds, or cabin toxicants.</p></div>
+      <div class="ask-mark">RAG</div>
+    </div>
+    <div class="q" style="margin-top:12px">
+      <button class="btn" type="button" data-q="How does microgravity change the Limiting Oxygen Index (LOI) compared to 1g?">0g vs 1g LOI shift</button>
+      <button class="btn" type="button" data-q="Why does concurrent flame spread behave differently from opposed flow in Saffire experiments?">Concurrent vs Opposed in Saffire</button>
+      <button class="btn" type="button" data-q="What are the primary toxic combustion products of PVC and Kapton in spacecraft fires?">PVC &amp; Kapton toxic gases</button>
     </div>
     <div class="search-row research-search-row">
       <input type="text" id="aq" placeholder="Ask about flame spread, extinction, oxygen transport, smoke species…" aria-label="Ask NASA research question">
@@ -1593,51 +1715,59 @@ body.sidebar-collapsed #pg{left:0!important}
     </div>
     <div class="ai research-answer" id="ao" aria-live="polite"></div>
   </section>
-
-  <div class="research-section-heading"><div><div class="dossier-label">HOW THE WORKSPACE IS BUILT</div><h3>Project architecture</h3></div><span>MODEL PIPELINE / 01—04</span></div>
+  <div class="research-section-heading"><div><div class="dossier-label">SYSTEM ARCHITECTURE</div><h3>Four-Engine Hybrid Pipeline</h3></div><span>FASTAPI v2.1.0 · 11 ENDPOINTS</span></div>
   <div class="architecture-grid">
-    <article class="architecture-card"><span class="architecture-index">01</span><div class="architecture-icon">∿</div><h4>Combustion model</h4><p>Reduced-order multi-gravity flame-spread calculations using material, gravity, oxygen, pressure, flow and geometry inputs.</p><small>PHYSICS ENGINE</small></article>
-    <article class="architecture-card"><span class="architecture-index">02</span><div class="architecture-icon">▦</div><h4>Thermal field solver</h4><p>NumPy-based Cartesian 2D transient thermal-pyrolysis field with Fourier-number-controlled sub-stepping.</p><small>TRANSIENT 2D PDE</small></article>
-    <article class="architecture-card"><span class="architecture-index">03</span><div class="architecture-icon">⌁</div><h4>Surrogate ensemble</h4><p>41-feature PyTorch surrogate with a five-member SiLU deep ensemble for fast cross-checking and disagreement estimates.</p><small>ML CROSS-CHECK</small></article>
-    <article class="architecture-card"><span class="architecture-index">04</span><div class="architecture-icon">◌</div><h4>Cabin toxicology</h4><p>Well-mixed cabin mass balance, ECLSS removal and modelled COHb / FED exposure indicators.</p><small>CREW EXPOSURE MODEL</small></article>
+    <article class="architecture-card"><span class="architecture-index">01</span><div class="architecture-icon">∿</div><h4>1D &amp; Quasi-2D Physics</h4><p>Coupled boundary-layer heat transfer (de Ris / Quintiere), Stefan-Boltzmann radiation, char insulation, lateral O₂ entrainment (BASS-II), and clamped-edge quenching.</p><small>BACKEND/FIRE_MODEL.PY</small></article>
+    <article class="architecture-card"><span class="architecture-index">02</span><div class="architecture-icon">▦</div><h4>2D Transient PDE Solver</h4><p>NumPy Cartesian thermal-pyrolysis grid with automatic Fourier CFL sub-stepping (Fo ≤ 0.20), resolving parabolic (clamped) vs. concave (free-edge) flame fronts.</p><small>SIMULATE_2D()</small></article>
+    <article class="architecture-card"><span class="architecture-index">03</span><div class="architecture-icon">⌁</div><h4>41-D Neural Surrogate</h4><p>5-member SiLU PyTorch deep ensemble trained on 35,000 stratified multi-gravity points (~2 ms). Includes a 30% divergence guardrail where physics remains authoritative.</p><small>AI/SURROGATE.PY</small></article>
+    <article class="architecture-card"><span class="architecture-index">04</span><div class="architecture-icon">◌</div><h4>Crew Toxicology ODE</h4><p>1-minute cabin mass-balance with ECLSS decay (1.8 ACH), SFPE/Tewarson yields, ISO 13571 Purser FED, CFK COHb% uptake, and 100% O₂ PBA mask washout.</p><small>BACKEND/TOXICOLOGY.PY</small></article>
   </div>
-
   <div class="research-readme-grid">
     <article class="readme-panel">
-      <div class="dossier-label">VALIDATION / WHAT THE NUMBERS MEAN</div>
-      <h3>Evidence, not just a headline metric.</h3>
-      <div class="readme-metric-row"><b>13</b><span>Core + Extended reference cases in the current evaluation set.</span></div>
-      <div class="readme-metric-row"><b>2.83%</b><span>Core five-case in-sample MAPE.</span></div>
-      <div class="readme-metric-row"><b>6.68%</b><span>13-point LOO MAPE with four selected parameters refit per fold.</span></div>
-      <p class="readme-caveat">LOO caveat: other empirical parameters previously fitted using the full 13-point dataset remain fixed in each fold. This result is not fully leakage-free and may be optimistic.</p>
+      <div class="dossier-label">FLIGHT VALIDATION &amp; SCIENTIFIC RIGOR</div>
+      <h3>Honest Error Reporting (13 NASA Flight Runs)</h3>
+      <div class="readme-metric-row"><b>2.83%</b><span><b>Core In-Sample MAPE</b> (R² = 1.000) across 5 wide-plate 101.3 kPa Saffire-I, II, and V runs.</span></div>
+      <div class="readme-metric-row"><b>5.90%</b><span><b>Combined In-Sample MAPE</b> (R² = 0.993) across all 13 Saffire I–V &amp; BASS-II runs (incl. rods, low-P, narrow sheets).</span></div>
+      <div class="readme-metric-row"><b>10.4–12.3%</b><span><b>Fully Nested Leave-One-Out MAPE</b> across 3 seeds — all 16 empirical constants refit from scratch per fold (median APE 6.8–11.2%).</span></div>
+      <p class="readme-caveat"><b>Key Physical Insight — Extinct ≠ Safe:</b> Even when flame spread extinguishes, an assumed 0.012 g/s smolder floor releases corrosive HCl from halogenated polymers (f-PVC), triggering CRITICAL crew triage while PMMA smolders benignly.</p>
     </article>
     <article class="readme-panel">
-      <div class="dossier-label">SCOPE / LIMITATIONS</div>
-      <h3>Where to interpret results carefully.</h3>
+      <div class="dossier-label">KNOWN LIMITATIONS &amp; NASA-STD-7009A ALIGNMENT</div>
+      <h3>Scope &amp; Credibility Boundaries</h3>
       <ul class="readme-list">
-        <li><b>118 materials modelled;</b> direct microgravity flight telemetry calibration is available for only three materials: SIBAL, PMMA and Nomex 450.</li>
-        <li>The combustion engine is a reduced-order model, not a full 3D CFD simulation.</li>
-        <li>The cabin toxicology calculation assumes a well-mixed cabin and simplified species / scrubber behaviour.</li>
-        <li>Applicability scores and some model-form uncertainty terms are heuristic indicators, not probabilities of correctness.</li>
-        <li>This research tool is not certified for spacecraft operational fire response or clinical decision-making.</li>
+        <li><b>3 Flight-Validated Fuels of 118:</b> Direct microgravity telemetry exists for <b>SIBAL</b>, <b>PMMA</b>, and <b>Nomex 450</b> (used as proxy for Saffire-IV Nomex HT9040). Other 115 materials are thermophysical extrapolations with explicit applicability scores (0–100).</li>
+        <li><b>Single-Point Regimes:</b> Low-pressure radiative feedback (55 kPa, Saffire-V S4) and near-LOI damping (26% O₂, Saffire-IV S2) rely on single runs and carry wider uncertainty.</li>
+        <li><b>Surrogate Is an Emulator:</b> It reproduces the physics engine (~2.2% avg gap on plates/fabrics, 16–26% on low-flow PMMA rods) and is not independently validated against flight data.</li>
+        <li><b>Well-Mixed Cabin Assumption:</b> Toxicology ODE models uniform cabin mixing (ISS 106 m³, Orion 9.3 m³, Gateway 60 m³, Mars 250 m³) with an assumed 2.1× 0g CO/soot multiplier.</li>
+        <li><b>Disclaimer:</b> Research and educational tool only — not clinical guidance or NASA-STD-6001B hardware certification.</li>
       </ul>
     </article>
   </div>
-
   <section class="source-register">
-    <div class="research-section-heading"><div><div class="dossier-label">SOURCE FAMILIES</div><h3>Literature represented in the corpus</h3></div><span>RETRIEVAL COLLECTION</span></div>
+    <div class="research-section-heading"><div><div class="dossier-label">PRIMARY LITERATURE &amp; STANDARDS</div><h3>Calibration &amp; Physiological Basis</h3></div><span>CONSTANTS PROVENANCE</span></div>
     <div class="source-register-grid">
-      <div><b>NASA Saffire I–V</b><p>Spacecraft fire experiments covering fabric and polymer configurations under microgravity conditions.</p></div>
-      <div><b>BASS-II</b><p>Burning and Suppression of Solids experiments supporting additional material and geometry regimes.</p></div>
-      <div><b>SoFIE</b><p>Solid Fuel Ignition and Extinction research material, including reports represented in the retrieval corpus.</p></div>
+      <div><b>Combustion Theory &amp; Flight Data</b><p>de Ris (1969), Quintiere (2006), Olson &amp; Ferkul (2019) Saffire-I/III, Ruff et al. (2021) Saffire-V, Urban et al. (ICES-2021-125) Saffire-IV, and Ferkul et al. BASS-II.</p></div>
+      <div><b>Toxicology &amp; Clinical Kinetics</b><p>NASA JSC 20584 Spacecraft Maximum Allowable Concentrations (SMACs), ISO 13571 Purser FED, Tewarson SFPE Handbook yields, and Coburn-Forster-Kane (CFK) COHb kinetics.</p></div>
+      <div><b>Uncertainty &amp; Credibility</b><p>Kline &amp; McClintock (1953) first-order Taylor sensor tolerance propagation combined with heuristic applicability scoring inspired by NASA-STD-7009A.</p></div>
     </div>
   </section>
-  <div class="research-footer-note"><span>PROJECT TEAM</span><b>Satyam Sharma</b> · Physics, PDE, surrogate, API and frontend &nbsp;&nbsp; <b>Shivam Sharma</b> · Clinical toxicology integration <span class="license-note">Apache License 2.0</span></div>
-</section>
+  <div class="research-footer-note research-team-block">
+    <span class="research-team-label">TEAM &amp; ATTRIBUTION</span>
+    <div class="research-team-row">
+      <b>Satyam Sharma</b>
+      <span>(B.Tech CSE — Data Science · Combustion physics, 2D PDE solver, PyTorch surrogate, FastAPI, frontend)</span>
+    </div>
+    <div class="research-team-row">
+      <b>Shivam Sharma</b>
+      <span>(MBBS — Clinical Medicine · Spacecraft crew toxicology, SMACs, ISO 13571 FED &amp; CFK COHb%)</span>
+      <span class="license-note">Apache License 2.0 · Not affiliated with NASA</span>
+    </div>
+  </div>
+</section></section>
 
 <footer data-page="shared">
   <div><b>Ashes of Microgravity</b> · NASA International Space Apps Challenge 2026 (Flame in Freefall)</div>
-  <div><b>Satyam Sharma</b> (B.Tech CSE — Data Science) &amp; <b>Shivam Sharma</b> (MBBS — Clinical Medicine) · Apache License 2.0</div>
+  <div><b>Satyam Sharma</b> (B.Tech CSE — Data Science) &amp;<b>Shivam Sharma</b> (MBBS — Clinical Medicine) · Apache License 2.0</div>
 </footer>
 </main>
 </div>
@@ -2073,7 +2203,7 @@ async function update2D(q){
       const cx=(e.clientX-rect.left)*scaleX,cy=(e.clientY-rect.top)*scaleY;
       const padL=64,padR=30,padT=52,padB=52,plotW=cvs.width-padL-padR,plotH=cvs.height-padT-padB;
       if(cx<padL||cx>padL+plotW||cy<padT||cy>padT+plotH){toast('Click inside the plotted material sheet.');return;}
-      const nx=Math.max(.02,Math.min(.98,(cx-padL)/plotW));const ny=Math.max(.02,Math.min(.98,1-(cy-padT)/plotH));
+      const nx=Math.max(.02,Math.min(.98,(cx-padL)/plotW));const ny=Math.max(.02,Math.min(.98,(cy-padT)/plotH));
       window._ignState={mode:'point',pos:[Number(nx.toFixed(4)),Number(ny.toFixed(4))]};
       const sel=$('pdeIgn');if(sel)sel.value='point';const hint=$('pdeIgnHint');if(hint)hint.textContent=`Spot ignition placed at x ${Math.round(nx*100)}% · y ${Math.round(ny*100)}%. Recomputing…`;
       toast(`Ignition point placed · ${Math.round(nx*100)}%, ${Math.round(ny*100)}%`);update2D(S());
@@ -2089,49 +2219,100 @@ function render2D(sim,idx){
   const snap=sim.snapshots[idx],ctx=cvs.getContext('2d');
   const W=cvs.width,H=cvs.height,padL=64,padR=30,padT=52,padB=52;
   const plotW=W-padL-padR,plotH=H-padT-padB;
-  ctx.fillStyle='#04070D';ctx.fillRect(0,0,W,H);
+  const L_mm=sim.dimensions_mm[0]||240,W_mm=sim.dimensions_mm[1]||150;
+
+  ctx.fillStyle='#071219';ctx.fillRect(0,0,W,H);
+
   const T=snap.temperature_K,nx=T.length,ny=T[0].length;
-  const cw=plotW/nx,ch=plotH/ny;
   const tMin=298.15,tMax=Math.max(700,...T.flat());
+
+  // Smooth heatmap via ImageData + bilinear upscale
+  const small=document.createElement('canvas');small.width=nx;small.height=ny;
+  const sctx=small.getContext('2d');
+  const img=sctx.createImageData(nx,ny);
+  const data=img.data;
   for(let i=0;i<nx;i++)for(let j=0;j<ny;j++){
     const n=Math.max(0,Math.min(1,(T[i][j]-tMin)/(tMax-tMin)));
     let r,g,b;
-    if(n<0.25){const u=n/0.25;r=Math.round(10+u*45);g=Math.round(22+u*75);b=Math.round(52+u*160)}
-    else if(n<0.65){const u=(n-0.25)/0.40;r=Math.round(55+u*200);g=Math.round(97+u*85);b=Math.round(212-u*165)}
-    else{const u=(n-0.65)/0.35;r=255;g=Math.round(182+u*73);b=Math.round(47+u*208)}
-    ctx.fillStyle=`rgb(${r},${g},${b})`;
-    ctx.fillRect(padL+i*cw,padT+j*ch,cw+0.8,ch+0.8);
+    if(n<0.25){const u=n/0.25;r=10+u*45;g=22+u*75;b=52+u*160}
+    else if(n<0.65){const u=(n-0.25)/0.40;r=55+u*200;g=97+u*85;b=212-u*165}
+    else{const u=(n-0.65)/0.35;r=255;g=182+u*73;b=47+u*208}
+    const oi=(j*nx+i)*4;
+    data[oi]=r|0;data[oi+1]=g|0;data[oi+2]=b|0;data[oi+3]=255;
   }
-  const contour=snap.front_contour_mm||[],L_mm=sim.dimensions_mm[0]||240,W_mm=sim.dimensions_mm[1]||150;
-  if(contour.length===ny){
-    ctx.strokeStyle='#10B981';ctx.lineWidth=4;ctx.shadowBlur=12;ctx.shadowColor='rgba(16,185,129,.9)';
-    ctx.beginPath();
-    for(let j=0;j<ny;j++){
-      const xPx=padL+Math.min(1,Math.max(0,contour[j]/L_mm))*plotW;
-      const yPx=padT+(j+0.5)*ch;
-      if(j===0)ctx.moveTo(xPx,yPx);else ctx.lineTo(xPx,yPx);
-    }
-    ctx.stroke();ctx.shadowBlur=0;
-  }
-  if(sim.edge_boundary==='clamped'){
-    ctx.fillStyle='#64748B';ctx.fillRect(padL,padT-5,plotW,5);ctx.fillRect(padL,padT+plotH,plotW,5);
-  }
-  if(window._ignState?.mode==='point'&&Array.isArray(window._ignState.pos)){
-    const ix=padL+window._ignState.pos[0]*plotW,iy=padT+(1-window._ignState.pos[1])*plotH;
-    ctx.beginPath();ctx.arc(ix,iy,10,0,Math.PI*2);ctx.strokeStyle='#f3f0e5';ctx.lineWidth=2;ctx.stroke();
-    ctx.beginPath();ctx.arc(ix,iy,3,0,Math.PI*2);ctx.fillStyle='#d96d47';ctx.fill();
-    ctx.beginPath();ctx.moveTo(ix-15,iy);ctx.lineTo(ix+15,iy);ctx.moveTo(ix,iy-15);ctx.lineTo(ix,iy+15);ctx.strokeStyle='rgba(243,240,229,.85)';ctx.lineWidth=1;ctx.stroke();
-  }
-  ctx.strokeStyle='rgba(255,255,255,0.22)';ctx.strokeRect(padL,padT,plotW,plotH);
-  ctx.fillStyle='#94A3B8';ctx.font='11px JetBrains Mono';
-  ctx.fillText('0 mm',padL,H-22);ctx.fillText(`${L_mm} mm`,padL+plotW-54,H-22);
-  ctx.fillText(`W: ${W_mm}mm`,8,padT+plotH/2);
-  ctx.fillStyle='#FBBF24';ctx.font='bold 12px JetBrains Mono';
-  ctx.fillText(`Elapsed: ${snap.t}s / ${sim.snapshots[sim.snapshots.length-1].t}s  |  Sheet:${L_mm}×${W_mm} mm  |  2D Front Speed:${sim.mean_2d_front_speed_mms} mm/s`,padL,22);
-  ctx.fillStyle='#CBD5E1';ctx.font='11px JetBrains Mono';
-  ctx.fillText(`Burned Area: ${snap.burned_area_pct}%  |  Max Reach:${snap.max_front_mm} mm`,padL,40);
-}
+  sctx.putImageData(img,0,0);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(small,0,0,nx,ny,padL,padT,plotW,plotH);
 
+  // Flame front — segment-aware (no cross-row spike)
+  const contour=snap.front_contour_mm||[];
+  if(contour.length===ny){
+    const sm=contour.slice();
+    for(let j=1;j<ny-1;j++)sm[j]=(contour[j-1]+contour[j]*2+contour[j+1])/4;
+    ctx.strokeStyle='#34D399';
+    ctx.lineWidth=2.5;
+    ctx.shadowBlur=8;ctx.shadowColor='rgba(52,211,153,0.55)';
+    ctx.beginPath();
+    let drawing=false;
+    for(let j=0;j<ny;j++){
+      const v=sm[j];
+      if(!isFinite(v)||v<=0.5){drawing=false;continue;}
+      const xPx=padL+Math.min(1,Math.max(0,v/L_mm))*plotW;
+      const yPx=padT+(j+0.5)*(plotH/ny);
+      if(!drawing){ctx.moveTo(xPx,yPx);drawing=true;}
+      else ctx.lineTo(xPx,yPx);
+    }
+    ctx.stroke();
+    ctx.shadowBlur=0;
+  }
+
+  // Clamped edges
+  if(sim.edge_boundary==='clamped'){
+    ctx.fillStyle='rgba(100,116,139,0.85)';
+    ctx.fillRect(padL,padT-3,plotW,3);
+    ctx.fillRect(padL,padT+plotH,plotW,3);
+  }
+
+  // Point ignition marker — pulsing target
+  if(window._ignState?.mode==='point'&&Array.isArray(window._ignState.pos)){
+    const ix=padL+window._ignState.pos[0]*plotW;
+    const iy=padT+window._ignState.pos[1]*plotH;
+    const pulse=1+0.15*Math.sin(performance.now()/350);
+    ctx.beginPath();ctx.arc(ix,iy,10*pulse,0,Math.PI*2);
+    ctx.strokeStyle='rgba(251,191,36,0.35)';ctx.lineWidth=2;ctx.stroke();
+    ctx.beginPath();ctx.arc(ix,iy,6,0,Math.PI*2);
+    ctx.strokeStyle='#FBBF24';ctx.lineWidth=2;ctx.stroke();
+    ctx.beginPath();ctx.arc(ix,iy,2.5,0,Math.PI*2);
+    ctx.fillStyle='#FBBF24';ctx.fill();
+    ctx.strokeStyle='rgba(251,191,36,0.55)';ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(ix-16,iy);ctx.lineTo(ix+16,iy);
+    ctx.moveTo(ix,iy-16);ctx.lineTo(ix,iy+16);
+    ctx.stroke();
+  }
+
+  // Frame
+  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;
+  ctx.strokeRect(padL,padT,plotW,plotH);
+
+  // Axis labels
+  ctx.fillStyle='#94A3B8';ctx.font='12px JetBrains Mono,monospace';
+  ctx.textAlign='center';
+  ctx.fillText('0',padL,H-26);
+  ctx.fillText(`${L_mm} mm`,padL+plotW,H-26);
+  ctx.textAlign='left';
+  ctx.fillText(`W ${W_mm} mm`,8,padT+plotH/2+4);
+
+  // Header — 2 lines, above plot, no overlap
+  ctx.textAlign='left';
+  ctx.fillStyle='#FBBF24';ctx.font='bold 12px JetBrains Mono,monospace';
+  ctx.fillText(`t = ${snap.t}s`,padL,26);
+  ctx.fillStyle='#94A3B8';ctx.font='11px JetBrains Mono,monospace';
+  ctx.fillText(`/ ${sim.snapshots[sim.snapshots.length-1].t}s  ·  ${L_mm}×${W_mm} mm  ·  ${sim.mean_2d_front_speed_mms} mm/s`,padL+72,26);
+  ctx.fillStyle='#CBD5E1';
+  ctx.fillText(`Burned ${snap.burned_area_pct}%   Max reach ${snap.max_front_mm} mm`,padL,42);
+}
 // ===== WORKBENCH TABS =====
 async function renderWorkbench(tName){
   activeTab=tName;
@@ -2162,7 +2343,7 @@ async function renderWorkbench(tName){
           <div class="kpi"><div class="kpi-k">Saffire Core Error</div><div class="kpi-v">${F(coreP.mp,2)}<small>% MAPE</small></div><div class="kpi-d">R² = ${F(coreP.r2,3)} across${coreP.n} core flights</div></div>
           <div class="kpi"><div class="kpi-k">All-13 Flights Error</div><div class="kpi-v">${F(allP.mp,2)}<small>% MAPE</small></div><div class="kpi-d">Includes rods, low-P &amp; narrow sheets</div></div>
           <div class="kpi"><div class="kpi-k">AI Surrogate Error</div><div class="kpi-v">${F(allA.mp,2)}<small>% MAPE</small></div><div class="kpi-d">41-feature PyTorch deep ensemble</div></div>
-          <div class="kpi"><div class="kpi-k">13-Point LOO · Partial Refit</div><div class="kpi-v">6.68<small>% MAPE</small></div><div class="kpi-d">Four selected parameters refit per fold; other full-set empirical fits remain fixed.</div></div>
+          <div class="kpi"><div class="kpi-k">Fully Nested LOO (3 Seeds)</div><div class="kpi-v">10.4–12.3<small>% MAPE</small></div><div class="kpi-d">All 16 empirical constants refit from scratch per fold (median APE 6.8–11.2%).</div></div>
         </div>
         ${plot({x0:0,x1:1.6,y0:0,y1:Math.max(2,...pp,...pa)*1.05,xl:'Actual NASA Spaceflight Measurement (mm/s)',yl:'Model Predicted (mm/s)',ln:[[0,0,1.6,1.6]],pt:[...BEN.map((b,i)=>[b[8],pp[i],'','#38BDF8']),...BEN.map((b,i)=>[b[8],pa[i],'','#FBBF24'])]})}
         ${tbl(['NASA Experiment','Material','Set','Actual (mm/s)','Physics (mm/s)','Error','AI Ensemble'],rows)}`;
@@ -2412,9 +2593,16 @@ function setScene(idx){
   [...$('theaterDots').children].forEach((d,i)=>d.classList.toggle('act',i===sceneIdx));
   const pause=$('storyPauseBtn');if(pause)pause.textContent=storyPaused?'▶ Resume':'Ⅱ Pause';
 }
+function syncStoryAudio(seekSec){
+  const au=$('storyAudio'),mb=$('storyMuteBtn');if(!au)return;
+  if(typeof seekSec==='number'&&!Number.isNaN(seekSec)){try{au.currentTime=Math.max(0,seekSec);}catch(e){}}
+  if(storyPaused){au.pause();}
+  else{au.play().then(()=>{if(mb)mb.textContent=au.muted?'🔇 Unmute':'🔊 Audio On';}).catch(()=>{if(mb)mb.textContent='🔇 Tap for Audio';toast('Click "Tap for Audio" to enable narration');});}
+}
 function openStoryTheater(){
   const modal=$('storyTheater');if(!modal)return;modal.classList.add('open');modal.setAttribute('aria-hidden','false');
   sceneIdx=0;storyPaused=false;storyRemaining=6000;storyPauseStarted=0;setScene(0);storyStartT=performance.now();
+  syncStoryAudio(0);
   const loop=now=>{if(!modal.classList.contains('open'))return;if(!storyPaused)drawStoryScene(now-storyStartT);const remain=storyPaused?storyRemaining:Math.max(0,storyDeadline-Date.now());const elapsed=sceneIdx*6+(6-remain/1000);const clock=$('storyClock');if(clock){const ss=String(Math.floor(elapsed)).padStart(2,'0');clock.textContent=`00:${ss} / 00:30`;}storyAnimId=requestAnimationFrame(loop);};
   cancelAnimationFrame(storyAnimId);storyAnimId=requestAnimationFrame(loop);startStoryClock();
 }
@@ -2422,14 +2610,17 @@ function pauseStory(){
   const pause=$('storyPauseBtn');
   if(!storyPaused){storyRemaining=Math.max(0,storyDeadline-Date.now());storyPaused=true;storyPauseStarted=performance.now();clearTimeout(storyAutoTimer);if($('storyProgress'))$('storyProgress').style.width=(100-storyRemaining/60)+'%';if(pause)pause.textContent='▶ Resume';}
   else{storyStartT+=performance.now()-storyPauseStarted;storyPauseStarted=0;storyPaused=false;if(pause)pause.textContent='Ⅱ Pause';startStoryClock();}
+  syncStoryAudio();
 }
 function moveStoryScene(delta){
   if(delta>0&&sceneIdx>=SCENES.length-1){closeStoryTheater();return;}
   clearTimeout(storyAutoTimer);storyPaused=false;storyPauseStarted=0;storyRemaining=6000;storyStartT=performance.now();setScene(sceneIdx+delta);startStoryClock();
+  syncStoryAudio(sceneIdx*6);
 }
 function closeStoryTheater(){
   const modal=$('storyTheater');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
   cancelAnimationFrame(storyAnimId);clearTimeout(storyAutoTimer);storyPaused=false;storyPauseStarted=0;
+  const au=$('storyAudio');if(au){au.pause();try{au.currentTime=0;}catch(e){}}
 }
 
 // ===== WIRE EVENTS =====
@@ -2483,8 +2674,12 @@ function wire(){
   $('prevSceneBtn').onclick=()=>moveStoryScene(-1);
   $('nextSceneBtn').onclick=()=>moveStoryScene(1);
   $('storyPauseBtn').onclick=pauseStory;
+  $('storyMuteBtn').onclick=()=>{const au=$('storyAudio'),mb=$('storyMuteBtn');if(!au)return;if(au.paused&&!storyPaused){au.play().catch(()=>{});au.muted=false;if(mb)mb.textContent='🔊 Audio On';}else{au.muted=!au.muted;if(mb)mb.textContent=au.muted?'🔇 Unmute':'🔊 Audio On';}};
   addEventListener('keydown',e=>{if(e.key==='Escape')closeStoryTheater()});
 }
+
+const dlBtn=$('dlReadmeBtn');
+if(dlBtn)dlBtn.onclick=e=>{e.preventDefault();const md=`# Ashes of Microgravity\n\n- Core In-Sample MAPE: 2.83% (5 runs)\n- Combined In-Sample MAPE: 5.90% (13 runs)\n- Fully Nested LOO MAPE: 10.4-12.3% (16 constants, 3 seeds)\n- Materials: 118 (3 flight-calibrated)\n- Toxicology: NASA JSC 20584 + ISO 13571\n\nTeam: Satyam Sharma (B.Tech CSE) & Shivam Sharma (MBBS)\nLicense: Apache 2.0`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([md],{type:'text/markdown'}));a.download='Ashes_of_Microgravity_README.md';a.click();};
 
 async function boot(){
   flameGL($('hg'),()=>0.02);
