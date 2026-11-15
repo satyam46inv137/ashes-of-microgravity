@@ -1,0 +1,15 @@
+# Render free tier — lightweight build (no torch/chromadb)
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.27,<1.0
+pydantic>=2.6,<3.0
+python-dotenv>=1.0
+numpy>=1.26,<3.0
+groq>=0.9
+scipy>=1.11
+scikit-learn>=1.4
+joblib>=1.3
+tqdm>=4.66
+pytest>=8.0
+httpx>=0.25
+pymupdf>=1.24
+pypdf>=4.0
